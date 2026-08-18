@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="محول تاريخ عربي بين الهجري والميلادي مع سجل محلي محفوظ في المتصفح." />
   <meta name="theme-color" content="#f6f1e7" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2317324d'/%3E%3Cpath d='M16 17h32v31H16z' fill='%23f6f1e7'/%3E%3Cpath d='M16 25h32M24 13v8m16-8v8' stroke='%23c55d3c' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M24 35h17m0 0-5-5m5 5-5 5' stroke='%2317324d' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <title>محول التاريخ الهجري والميلادي</title>
   <style>
     :root{--paper:#f6f1e7;--sheet:#fffdf8;--ink:#17324d;--clay:#c55d3c;--sand:#e8decd;--line:#d4c7b5;--muted:#71808a;--shadow:rgba(23,50,77,.10);--ease:cubic-bezier(.23,1,.32,1)}
@@ -112,7 +113,7 @@
       function renderInputs(){
         const meta={day:"اليوم",month:"الشهر",year:"السنة"}; fieldsBox.innerHTML="";
         inputOrder().forEach((key,index)=>{const label=document.createElement("label");label.className="field"+(key==="year"?" year":"");label.innerHTML=`<span class="field-label"><i>${String(index+1).padStart(2,"0")}</i>${meta[key]}</span><input aria-label="${meta[key]}" data-key="${key}" inputmode="numeric" autocomplete="off" maxlength="${key==="year"?4:2}" value="${escapeAttr(fields[key]||"")}">`;fieldsBox.appendChild(label)});
-        fieldsBox.querySelectorAll("input").forEach((input,idx,all)=>{input.addEventListener("input",e=>{const value=e.target.value.replace(/\D/g,"").slice(0,e.target.maxLength);e.target.value=value;fields[e.target.dataset.key]=value;clearResult();if(value.length===Number(e.target.maxLength)&&all[idx+1])all[idx+1].focus()});input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();convert()}})});
+        fieldsBox.querySelectorAll("input").forEach((input,idx,all)=>{input.addEventListener("input",e=>{const value=e.target.value.replace(/\D/g,"").slice(0,e.target.maxLength);e.target.value=value;fields[e.target.dataset.key]=value;clearResult();if(value.length===Number(e.target.maxLength)&&all[idx+1])all[idx+1].focus();if(fieldsComplete())convert()});input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();copyCurrentResult()}})});
       }
       function escapeAttr(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
       function renderMode(){
@@ -121,11 +122,12 @@
       }
       function clearResult(){lastResult=null;error.textContent="";error.classList.remove("show");result.classList.remove("filled");placeholder.hidden=false;resultContent.hidden=true;saved.classList.remove("show")}
       function showError(message){error.textContent=message;error.classList.add("show");result.classList.remove("filled");placeholder.hidden=false;resultContent.hidden=true;saved.classList.remove("show")}
+      function fieldsComplete(){return Boolean(fields.day&&fields.month&&fields.year)}
       function convert(){
         const source=numberDate(fields);if(!source){showError("أكمل اليوم والشهر والسنة بأرقام صحيحة أولاً.");return}
         const output=direction==="gregorian-to-hijri"?toHijri(source):toGregorian(source);if(!output){showError(direction==="gregorian-to-hijri"?"هذا التاريخ الميلادي غير صالح.":"تعذر العثور على هذا التاريخ الهجري ضمن نطاق التقويم المدعوم.");return}
         lastResult=output;error.classList.remove("show");const names=typeNames();$("#result-title").textContent=names.result==="gregorian"?"التاريخ الميلادي":"التاريخ الهجري";$("#result-date").textContent=visibleText(output,names.result);$("#result-format").textContent=names.result==="gregorian"?"MM / DD / YYYY":"DD / MM / YYYY";placeholder.hidden=true;resultContent.hidden=false;result.classList.add("filled");saved.classList.add("show");
-        history.unshift({id:Date.now()+"-"+Math.random().toString(36).slice(2,7),direction,source,result:output,time:Date.now()});history=history.slice(0,12);saveHistory();renderHistory();
+        const duplicate=history[0]&&history[0].direction===direction&&same(history[0].source,source)&&same(history[0].result,output);if(!duplicate){history.unshift({id:Date.now()+"-"+Math.random().toString(36).slice(2,7),direction,source,result:output,time:Date.now()});history=history.slice(0,12);saveHistory();renderHistory()}
       }
       function renderHistory(){
         clearButton.classList.toggle("show",history.length>0); if(!history.length){historyBox.innerHTML='<div class="empty"><div class="empty-art" aria-hidden="true"></div><b>لا توجد تحويلات محفوظة بعد.</b><span>سيظهر هنا آخر ما تحوّله.</span></div>';return}
@@ -139,7 +141,8 @@
       function monthWords(date,type){const month=(type==="gregorian"?gregorianMonths:hijriMonths)[date.month-1]||"";return `${month} ${date.year}${type==="gregorian"?" م":" هـ"}`}
       const resultWords=document.createElement("span");resultWords.className="result-words";$("#result-format").insertAdjacentElement("afterend",resultWords);
       function copyText(text){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(text);return new Promise((resolve,reject)=>{const area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy")?resolve():reject();area.remove()})}
-      $("#copy").addEventListener("click",()=>{if(!lastResult)return;const type=typeNames().result;const label=type==="gregorian"?"التاريخ الميلادي":"التاريخ الهجري";const text=`${label}: ${visibleText(lastResult,type)} — ${monthWords(lastResult,type)}`;const status=$("#copy-status");copyText(text).then(()=>{status.textContent="تم النسخ";setTimeout(()=>status.textContent="",1800)}).catch(()=>{status.textContent="تعذر النسخ";setTimeout(()=>status.textContent="",1800)})});
+      function copyCurrentResult(){if(!lastResult)return;const type=typeNames().result;const label=type==="gregorian"?"التاريخ الميلادي":"التاريخ الهجري";const text=`${label}: ${visibleText(lastResult,type)} — ${monthWords(lastResult,type)}`;const status=$("#copy-status");copyText(text).then(()=>{status.textContent="تم النسخ";setTimeout(()=>status.textContent="",1800)}).catch(()=>{status.textContent="تعذر النسخ";setTimeout(()=>status.textContent="",1800)})}
+      $("#copy").addEventListener("click",copyCurrentResult);
       new MutationObserver(()=>{if(lastResult)resultWords.textContent=monthWords(lastResult,typeNames().result)}).observe($("#result-date"),{childList:true});
       new MutationObserver(()=>{document.querySelectorAll(".history-item").forEach((button,index)=>{const item=history[index];if(!item)return;const types=item.direction==="gregorian-to-hijri"?{source:"gregorian",result:"hijri"}:{source:"hijri",result:"gregorian"};let words=button.querySelector(".history-words");if(!words){words=document.createElement("span");words.className="history-words";button.insertBefore(words,button.querySelector("small"))}words.textContent=`${monthWords(item.source,types.source)} ← ${monthWords(item.result,types.result)}`})}).observe(historyBox,{childList:true});
       renderMode();renderHistory();document.querySelector("#date-fields input")?.focus();
