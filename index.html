@@ -114,7 +114,7 @@
       function renderInputs(){
         const meta={day:"اليوم",month:"الشهر",year:"السنة"}; fieldsBox.innerHTML="";
         inputOrder().forEach((key,index)=>{const label=document.createElement("label");label.className="field"+(key==="year"?" year":"");label.innerHTML=`<span class="field-label"><i>${String(index+1).padStart(2,"0")}</i>${meta[key]}</span><input aria-label="${meta[key]}" data-key="${key}" inputmode="numeric" autocomplete="off" maxlength="${key==="year"?4:2}" value="${escapeAttr(fields[key]||"")}">`;fieldsBox.appendChild(label)});
-        fieldsBox.querySelectorAll("input").forEach((input,idx,all)=>{input.addEventListener("input",e=>{const value=e.target.value.replace(/\D/g,"").slice(0,e.target.maxLength);e.target.value=value;fields[e.target.dataset.key]=value;clearResult();if(value.length===Number(e.target.maxLength)&&all[idx+1])all[idx+1].focus();if(fieldsComplete())convert()});input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();copyCurrentResult()}})});
+        fieldsBox.querySelectorAll("input").forEach((input,idx,all)=>{input.addEventListener("input",e=>{const value=e.target.value.replace(/\D/g,"").slice(0,e.target.maxLength);e.target.value=value;fields[e.target.dataset.key]=value;clearResult();if(value.length===Number(e.target.maxLength)&&all[idx+1])all[idx+1].focus();if(value===""&&e.inputType==="deleteContentBackward"&&all[idx-1]){all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}if(fieldsComplete())convert()});input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();copyCurrentResult()}if(e.key==="Backspace"&&input.value===""&&all[idx-1]){e.preventDefault();all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}})});
       }
       function escapeAttr(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
       function renderMode(){
@@ -123,7 +123,7 @@
       }
       function clearResult(){lastResult=null;error.textContent="";error.classList.remove("show");result.classList.remove("filled");placeholder.hidden=false;resultContent.hidden=true;saved.classList.remove("show")}
       function showError(message){error.textContent=message;error.classList.add("show");result.classList.remove("filled");placeholder.hidden=false;resultContent.hidden=true;saved.classList.remove("show")}
-      function fieldsComplete(){return Boolean(fields.day&&fields.month&&fields.year)}
+      function fieldsComplete(){return fields.day.length===2&&fields.month.length===2&&fields.year.length===4}
       function convert(){
         const source=numberDate(fields);if(!source){showError("أكمل اليوم والشهر والسنة بأرقام صحيحة أولاً.");return}
         const output=direction==="gregorian-to-hijri"?toHijri(source):toGregorian(source);if(!output){showError(direction==="gregorian-to-hijri"?"هذا التاريخ الميلادي غير صالح.":"تعذر العثور على هذا التاريخ الهجري ضمن نطاق التقويم المدعوم.");return}
