@@ -123,7 +123,7 @@
       }
       function clearResult(){lastResult=null;error.textContent="";error.classList.remove("show");result.classList.remove("filled");placeholder.hidden=false;resultContent.hidden=true;saved.classList.remove("show")}
       function showError(message){error.textContent=message;error.classList.add("show");result.classList.remove("filled");placeholder.hidden=false;resultContent.hidden=true;saved.classList.remove("show")}
-      function fieldsComplete(){return fields.day.length===2&&fields.month.length===2&&fields.year.length===4}
+      function fieldsComplete(){return Boolean(fields.day&&fields.month)&&fields.year.length===4}
       function convert(){
         const source=numberDate(fields);if(!source){showError("أكمل اليوم والشهر والسنة بأرقام صحيحة أولاً.");return}
         const output=direction==="gregorian-to-hijri"?toHijri(source):toGregorian(source);if(!output){showError(direction==="gregorian-to-hijri"?"هذا التاريخ الميلادي غير صالح.":"تعذر العثور على هذا التاريخ الهجري ضمن نطاق التقويم المدعوم.");return}
