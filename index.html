@@ -25,6 +25,64 @@
     /* واجهة مبسطة: تركيز على الإدخال والنتيجة والسجل. */
     .hero{min-height:158px;padding:36px 0 25px}.hero:before,.hero:after,.ruler,.eyebrow,.marker,.timeline,.node,.converter:before,.archive:before,.record,.seal,.result:after{display:none}.hero h1{font-size:clamp(30px,3.6vw,44px);line-height:1.3;letter-spacing:-.04em}.workspace{grid-template-columns:minmax(0,1fr) 430px;gap:38px}.converter{padding-right:0;background-image:none}.section{margin-bottom:28px}.entry-title{display:block;max-width:384px;margin-top:17px}.entry-title span{display:block;margin:0 4px 7px;color:#526572;font-size:13px;font-weight:700}.entry-title small{margin-right:5px;color:var(--clay);font-size:10px;font-weight:400}.entry-title input{width:100%;height:45px;border:1px solid #cec3b2;background:rgba(255,253,248,.76);color:var(--ink);padding:0 13px;font:14px Tahoma;transition:.16s var(--ease)}.entry-title input:focus{outline:0;border-color:var(--clay);background:var(--sheet);box-shadow:3px 3px 0 rgba(197,93,60,.14)}.result{min-height:128px;box-shadow:4px 4px 0 rgba(23,50,77,.06)}.result.filled{box-shadow:5px 5px 0 rgba(23,50,77,.10);transform:none}.archive{padding:30px 27px 26px;border-top-width:3px;box-shadow:7px 7px 0 rgba(23,50,77,.06)}.archive-head{padding-bottom:21px}.archive-head h2{font-size:23px}.archive-head .stamp{width:37px;height:37px;font-size:9px}.history{min-height:410px}.history-item{position:relative;display:block;width:100%;padding:0;border-bottom:1px solid #d7cbb9}.history-open{display:grid;width:calc(100% - 72px);grid-template-columns:45px minmax(0,1fr);gap:5px 13px;padding:18px 0 17px;border:0;background:transparent;color:var(--ink);text-align:right;cursor:pointer;transition:.16s var(--ease)}.history-open:hover{padding-right:7px;background:rgba(234,223,205,.38)}.history-open:focus-visible,.history-delete:focus-visible,.history-edit:focus-visible,.history-title-editor input:focus-visible{outline:3px solid rgba(197,93,60,.42);outline-offset:2px}.history-delete,.history-edit{position:absolute;top:19px;display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);background:var(--sheet);color:#7b675b;line-height:1;cursor:pointer;transition:.16s var(--ease)}.history-delete{left:0;font-size:18px}.history-edit{left:35px;font-size:15px}.history-delete:hover,.history-edit:hover{border-color:var(--clay);background:#fff1e9;color:var(--clay)}.history-delete:active,.history-edit:active,.history-open:active{transform:scale(.97)}.history-title-editor{display:flex;gap:6px;align-items:center;margin:0 0 13px;padding:8px;background:#f3eadc}.history-title-editor input{min-width:0;flex:1;height:32px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);padding:0 8px;font:12px Tahoma}.history-title-editor button{height:32px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);padding:0 8px;font:11px Tahoma;cursor:pointer}.history-title-editor button:first-of-type{border-color:var(--clay);background:var(--clay);color:#fff}.history-kind{min-width:45px;height:31px;font-size:10px}.history-dates{gap:8px;font-size:15px;letter-spacing:-.06em}.history-words{font-size:12px;line-height:1.6}.history-title{font-size:13px}.history-item small{font-size:11px}.storage{font-size:12px;margin-top:17px;padding-top:16px}@media(max-width:820px){.hero{min-height:125px;padding:30px 0 22px}.workspace{gap:26px}.converter{padding-right:0}.archive{padding:24px 20px}.history{min-height:360px}.history-dates{font-size:13px}}@media(max-width:480px){.hero h1{font-size:29px}.history-open{grid-template-columns:40px minmax(0,1fr);gap:4px 9px;width:calc(100% - 64px)}.history-kind{min-width:40px}.history-dates{font-size:12px}.history-words{font-size:11px}.history-delete,.history-edit{width:25px;height:25px}.history-edit{left:31px}.history-title-editor{gap:4px}.history-title-editor button{padding:0 6px}}
   </style>
+  <style>
+    /* حاسبة الأيام */
+    .direction,.calc-tab,.calc-type{cursor:pointer}
+    .calc-tab{border:0;border-bottom:2px solid transparent;background:transparent;color:#72808a;padding:0 0 13px;margin-left:22px;font:600 14px Tahoma;transition:.16s var(--ease)}
+    .calc-tab.active{color:var(--ink);border-color:var(--clay)}
+    .calc-tab:active,.calc-type:active{transform:scale(.97)}
+    .calc-tab:focus-visible,.calc-type:focus-visible{outline:3px solid rgba(197,93,60,.42);outline-offset:3px}
+    .calc-section [hidden]{display:none!important}
+    .calc-type-row{display:flex;width:max-content;max-width:100%;border:1px solid var(--line)}
+    .calc-type{border:0;background:rgba(255,253,248,.76);color:#526572;padding:10px 20px;font:700 13px Tahoma;transition:.16s var(--ease)}
+    .calc-type+.calc-type{border-right:1px solid var(--line)}
+    .calc-type.active{background:var(--ink);color:#fff}
+    .calc-label{margin:24px 0 10px;color:#526572;font-size:13px;font-weight:700}
+    .calc-durations{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;max-width:520px}
+    .calc-durations .field{width:auto}
+    .calc-durations .field input{direction:ltr}
+    .calc-actions{margin-top:24px}
+    .calc-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:22px}
+    .calc-card{min-width:0;padding:16px 18px 14px;border:1px solid var(--ink);background:var(--sheet);box-shadow:5px 5px 0 rgba(23,50,77,.10)}
+    .calc-card-title{display:block;margin-bottom:6px;color:#667580;font-size:13px}
+    .calc-card .result-date{font-size:clamp(24px,3vw,32px)}
+    .top-actions{display:flex;align-items:center;gap:18px}
+    .fmt-toggle{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border:1px solid #cabfad;background:transparent;color:var(--ink);font:600 13px Tahoma;cursor:pointer;transition:.16s var(--ease)}
+    .fmt-toggle:hover,.fmt-toggle[aria-expanded="true"]{border-color:var(--ink);background:#eee6d9}
+    .fmt-toggle:active,.fmt-reset:active,.fmt-close:active{transform:scale(.97)}
+    .fmt-toggle:focus-visible,.fmt-reset:focus-visible,.fmt-close:focus-visible,.fmt-field select:focus-visible{outline:3px solid rgba(197,93,60,.42);outline-offset:3px}
+    .fmt-panel{margin:22px 0 0;padding:22px 24px 24px;border:1px solid var(--ink);background:var(--sheet);box-shadow:6px 6px 0 rgba(23,50,77,.08)}
+    .fmt-panel[hidden]{display:none}
+    .fmt-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .fmt-head h2{margin:0;font-size:19px}
+    .fmt-head-actions{display:flex;gap:8px}
+    .fmt-reset,.fmt-close{height:34px;padding:0 12px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 12px Tahoma;cursor:pointer;transition:.16s var(--ease)}
+    .fmt-reset:hover,.fmt-close:hover{border-color:var(--clay);color:var(--clay)}
+    .fmt-note{margin:0 0 20px;padding-bottom:14px;border-bottom:1px solid var(--line);color:#657781;font-size:12px;line-height:1.9}
+    .fmt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 30px}
+    .fmt-col{min-width:0}
+    .fmt-col h3{margin:0 0 10px;color:var(--clay);font-size:15px}
+    .fmt-preview{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 14px;padding:10px 12px;background:#f3eadc}
+    .fmt-preview small{color:#7b675b;font-size:11px;white-space:nowrap}
+    .fmt-sample{display:block;min-width:0;unicode-bidi:plaintext;text-align:right;font:500 17px monospace;color:var(--ink);overflow-wrap:anywhere}
+    .fmt-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .fmt-common{grid-column:1/-1}
+    .fmt-field span{display:block;margin:0 2px 6px;color:#526572;font-size:12px;font-weight:700}
+    .fmt-field select{width:100%;height:40px;padding:0 8px;border:1px solid #cec3b2;border-radius:0;background:rgba(255,253,248,.76);color:var(--ink);font:13px Tahoma;cursor:pointer;transition:.16s var(--ease)}
+    .fmt-field select:hover{border-color:#9eaaa9}
+    .fmt-field select:focus{outline:0;border-color:var(--clay);background:var(--sheet);box-shadow:3px 3px 0 rgba(197,93,60,.14)}
+    .result-date,.history-dates{letter-spacing:0}
+    .result-date{unicode-bidi:plaintext}
+    .history-dates{flex-wrap:wrap}
+    .history-dates b,.history-dates strong{unicode-bidi:plaintext}
+    @media(max-width:820px){.fmt-grid{grid-template-columns:1fr}.fmt-panel{padding:18px 16px 20px}}
+    @media(max-width:480px){.fmt-fields{grid-template-columns:1fr}.top-actions{gap:0}.fmt-toggle{height:36px;padding:0 10px;font-size:12px}}
+    .calc-history .history-kind{grid-row:span 5}
+    .calc-history .history-open>:not(.history-kind){grid-row:auto}
+    .calc-history .history-title bdi{font-family:monospace}
+    @media(max-width:560px){.calc-results{grid-template-columns:1fr}.calc-durations{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:480px){.direction-row{flex-wrap:wrap}.direction,.calc-tab{margin-left:12px;font-size:12px}}
+  </style>
   <main class="app">
     <div class="shell">
       <header class="topbar">
@@ -32,8 +90,18 @@
           <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M12 12h19v23H12z" fill="#17324d"/><path d="M18 8h19v23H18z" fill="#c55d3c"/><path d="M15 18h17M15 23h17M15 28h10" stroke="#fffdf8" stroke-width="2"/><path d="M20 36h15l-4-4m4 4-4 4" stroke="#fffdf8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <span class="brand-word">محول <small>التاريخ</small></span>
         </a>
-        <div class="mini-line">هجري<i></i>ميلادي</div>
+        <div class="top-actions"><div class="mini-line">هجري<i></i>ميلادي</div><button class="fmt-toggle" id="fmt-toggle" type="button" aria-expanded="false" aria-controls="fmt-panel">⚙ تنسيق التواريخ</button></div>
       </header>
+
+      <section class="fmt-panel" id="fmt-panel" aria-label="تنسيق عرض التواريخ" hidden>
+        <div class="fmt-head"><h2>تنسيق عرض التواريخ</h2><div class="fmt-head-actions"><button class="fmt-reset" id="fmt-reset" type="button">↺ إعادة الضبط</button><button class="fmt-close" id="fmt-close" type="button" aria-label="إغلاق">×</button></div></div>
+        <p class="fmt-note">يسري التنسيق على جميع التواريخ في الصفحة: المحول والحاسبة والسجلات ونص النسخ، ويتبعه ترتيب خانات الإدخال. يُحفظ على هذا الجهاز.</p>
+        <div class="fmt-grid">
+          <div class="fmt-col" id="fmt-gregorian"><h3>التاريخ الميلادي</h3><p class="fmt-preview"><small>مثال بتاريخ اليوم</small><strong class="fmt-sample"></strong></p><div class="fmt-fields"></div></div>
+          <div class="fmt-col" id="fmt-hijri"><h3>التاريخ الهجري</h3><p class="fmt-preview"><small>مثال بتاريخ اليوم</small><strong class="fmt-sample"></strong></p><div class="fmt-fields"></div></div>
+          <div class="fmt-col fmt-common" id="fmt-common"><h3>عام</h3><div class="fmt-fields"></div></div>
+        </div>
+      </section>
 
       <section class="hero" aria-labelledby="title">
         <div class="hero-copy">
@@ -49,6 +117,7 @@
             <div class="direction-row" role="group" aria-label="اتجاه التحويل">
               <button class="direction active" data-direction="hijri-to-gregorian" type="button">هجري ← ميلادي</button>
               <button class="direction" data-direction="gregorian-to-hijri" type="button">ميلادي ← هجري</button>
+              <button class="calc-tab" id="calc-toggle" type="button" aria-pressed="false">حاسبة الأيام</button>
             </div>
           </div>
 
@@ -67,11 +136,41 @@
             <div class="result" id="result" aria-live="polite"><div class="placeholder" id="placeholder"><span>ستظهر النتيجة هنا</span><i></i><span>بعد تحويل التاريخ</span></div><div id="result-content" hidden><div class="result-meta"><span>سجل التحويل المكتمل</span><span>▣</span></div><span class="record">أصل موثّق</span><p class="result-label" id="result-title"></p><strong class="result-date" id="result-date"></strong><small class="result-format" id="result-format"></small><button class="copy" id="copy" type="button">⧉ نسخ النتيجة</button><span class="copy-status" id="copy-status" aria-live="polite"></span><span class="seal">تمّ<br>التوثيق</span></div></div>
             <p class="saved" id="saved">◷ تم توثيق التحويل في سجلك المحلي.</p>
           </div>
+        
+          <div class="section calc-section" id="calc-section" hidden>
+            <div class="section-head"><div><h2>حاسبة الأيام</h2></div><span class="format" id="calc-format">شهر / يوم / سنة — بالترتيب الأمريكي</span></div>
+            <div class="calc-type-row" role="group" aria-label="نوع تاريخ البداية">
+              <button class="calc-type active" data-type="gregorian" type="button">تاريخ ميلادي</button>
+              <button class="calc-type" data-type="hijri" type="button">تاريخ هجري</button>
+            </div>
+            <p class="calc-label">تاريخ البداية</p>
+            <div class="date-fields" id="calc-date-fields"></div>
+            <p class="calc-label">المدة المراد إضافتها</p>
+            <div class="calc-durations">
+              <label class="field"><span class="field-label">أيام</span><input id="calc-days" aria-label="عدد الأيام" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
+              <label class="field"><span class="field-label">أسابيع</span><input id="calc-weeks" aria-label="عدد الأسابيع" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
+              <label class="field"><span class="field-label">شهور</span><input id="calc-months" aria-label="عدد الشهور" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
+              <label class="field"><span class="field-label">سنوات</span><input id="calc-years" aria-label="عدد السنوات" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
+            </div>
+            <label class="entry-title"><span>عنوان العملية <small>اختياري</small></span><input id="calc-title" type="text" maxlength="48" autocomplete="off" placeholder="مثال: نهاية مدة العقد" /></label>
+            <p class="tip">تُضاف السنوات والشهور أولاً بتقويم تاريخ البداية، ثم الأسابيع والأيام. أدخل رقماً سالباً (مثل -7) للطرح.</p>
+            <div class="actions calc-actions"><button class="primary" id="calc-run" type="button"><span>＋</span> احسب التاريخ</button></div>
+            <p class="error" id="calc-error" role="alert"></p>
+            <div class="calc-results" id="calc-results" hidden aria-live="polite">
+              <div class="calc-card"><span class="calc-card-title">التاريخ الميلادي</span><strong class="result-date" id="calc-g-date"></strong><span class="result-words" id="calc-g-words"></span><button class="copy" id="calc-g-copy" type="button">⧉ نسخ الميلادي</button><span class="copy-status" id="calc-g-status" aria-live="polite"></span></div>
+              <div class="calc-card"><span class="calc-card-title">التاريخ الهجري</span><strong class="result-date" id="calc-h-date"></strong><span class="result-words" id="calc-h-words"></span><button class="copy" id="calc-h-copy" type="button">⧉ نسخ الهجري</button><span class="copy-status" id="calc-h-status" aria-live="polite"></span></div>
+            </div>
+          </div>
         </section>
 
         <aside class="archive" aria-label="آخر التحويلات">
           <div class="archive-head"><div><p class="marker">الأرشيف المحلي</p><h2>◷ آخر التحويلات</h2></div><span class="stamp">محلي</span><button class="clear" id="clear" type="button">⌫ مسح</button></div>
           <div class="history" id="history"></div><p class="storage">يُحفظ السجل على هذا الجهاز فقط، داخل ذاكرة المتصفح المحلية.</p>
+        </aside>
+
+        <aside class="archive" id="calc-archive" aria-label="آخر عمليات الحاسبة" hidden>
+          <div class="archive-head"><div><p class="marker">الأرشيف المحلي</p><h2>◷ آخر العمليات</h2></div><span class="stamp">محلي</span><button class="clear" id="calc-clear" type="button">⌫ مسح</button></div>
+          <div class="history calc-history" id="calc-history"></div><p class="storage">يُحفظ السجل على هذا الجهاز فقط، داخل ذاكرة المتصفح المحلية.</p>
         </aside>
       </div>
       <footer class="footer">محول التاريخ <span>—</span> التقويم الهجري يعتمد إعداد أم القرى في متصفحك.</footer>
@@ -105,13 +204,13 @@
         for(let i=-30;i<=30;i++){const probe=new Date(estimate+i*86400000);if(same(parts(hFormat,probe),h))return parts(gFormat,probe)} return null;
       }
       function toHijri(g) { const probe=new Date(Date.UTC(g.year,g.month-1,g.day)); if(probe.getUTCFullYear()!==g.year||probe.getUTCMonth()!==g.month-1||probe.getUTCDate()!==g.day)return null; return parts(hFormat,probe); }
-      function gregorianText(d) { return String(d.month).padStart(2,"0")+"/"+String(d.day).padStart(2,"0")+"/"+d.year; }
-      function hijriText(d) { return String(d.day).padStart(2,"0")+"/"+String(d.month).padStart(2,"0")+"/"+d.year; }
+      function gregorianText(d) { return formatDate(d,"gregorian"); }
+      function hijriText(d) { return formatDate(d,"hijri"); }
       function visibleText(d,type){return type==="gregorian"?gregorianText(d):hijriText(d)}
       function loadHistory(){try{const x=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(x)?x:[]}catch{return[]}}
       function saveHistory(){try{localStorage.setItem(STORE,JSON.stringify(history))}catch{}}
       function typeNames(){return direction==="gregorian-to-hijri"?{source:"gregorian",result:"hijri"}:{source:"hijri",result:"gregorian"}}
-      function inputOrder(){return direction==="gregorian-to-hijri"?["month","day","year"]:["day","month","year"]}
+      function inputOrder(){return orderKeys(FMT[direction==="gregorian-to-hijri"?"gregorian":"hijri"].order)}
       function renderInputs(){
         const meta={day:"اليوم",month:"الشهر",year:"السنة"}; fieldsBox.innerHTML="";
         inputOrder().forEach((key,index)=>{const label=document.createElement("label");label.className="field"+(key==="year"?" year":"");label.innerHTML=`<span class="field-label"><i>${String(index+1).padStart(2,"0")}</i>${meta[key]}</span><input aria-label="${meta[key]}" data-key="${key}" inputmode="numeric" autocomplete="off" maxlength="${key==="year"?4:2}" value="${escapeAttr(fields[key]||"")}">`;fieldsBox.appendChild(label)});
@@ -120,7 +219,7 @@
       function escapeAttr(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
       function escapeHtml(v){return escapeAttr(v)}
       function renderMode(){
-        const g=direction==="gregorian-to-hijri"; sourceTitle.textContent=g?"التاريخ الميلادي":"التاريخ الهجري"; sourceFormat.textContent=g?"شهر / يوم / سنة — بالترتيب الأمريكي":"يوم / شهر / سنة";
+        const g=direction==="gregorian-to-hijri"; sourceTitle.textContent=g?"التاريخ الميلادي":"التاريخ الهجري"; sourceFormat.textContent=orderHint(g?"gregorian":"hijri");
         document.querySelectorAll(".direction").forEach(button=>button.classList.toggle("active",button.dataset.direction===direction));renderInputs();
       }
       function clearResult(){lastResult=null;error.textContent="";error.classList.remove("show");result.classList.remove("filled");placeholder.hidden=false;resultContent.hidden=true;saved.classList.remove("show")}
@@ -129,26 +228,268 @@
       function convert(){
         const source=numberDate(fields);if(!source){showError("أكمل اليوم والشهر والسنة بأرقام صحيحة أولاً.");return}
         const output=direction==="gregorian-to-hijri"?toHijri(source):toGregorian(source);if(!output){showError(direction==="gregorian-to-hijri"?"هذا التاريخ الميلادي غير صالح.":"تعذر العثور على هذا التاريخ الهجري ضمن نطاق التقويم المدعوم.");return}
-        lastResult=output;lastSource=source;error.classList.remove("show");const names=typeNames();$("#result-title").textContent=names.result==="gregorian"?"التاريخ الميلادي":"التاريخ الهجري";$("#result-date").textContent=visibleText(output,names.result);$("#result-format").textContent=names.result==="gregorian"?"MM / DD / YYYY":"DD / MM / YYYY";placeholder.hidden=true;resultContent.hidden=false;result.classList.add("filled");saved.classList.remove("show");
+        lastResult=output;lastSource=source;error.classList.remove("show");const names=typeNames();$("#result-title").textContent=names.result==="gregorian"?"التاريخ الميلادي":"التاريخ الهجري";$("#result-date").textContent=visibleText(output,names.result);$("#result-format").textContent=patternText(names.result);placeholder.hidden=true;resultContent.hidden=false;result.classList.add("filled");saved.classList.remove("show");
       }
       function openTitleEditor(item,row){if(row.querySelector(".history-title-editor"))return;const editor=document.createElement("div");editor.className="history-title-editor";editor.innerHTML='<input type="text" maxlength="48" placeholder="عنوان التحويل"><button type="button">حفظ</button><button type="button">إلغاء</button>';const input=editor.querySelector("input");input.value=item.title||"";const commit=()=>{item.title=input.value.trim().slice(0,48);saveHistory();renderHistory()};editor.querySelector("button").addEventListener("click",commit);editor.querySelectorAll("button")[1].addEventListener("click",renderHistory);input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();commit()}if(event.key==="Escape"){event.preventDefault();renderHistory()}});row.appendChild(editor);input.focus();input.select()}
       function renderHistory(){
         clearButton.classList.toggle("show",history.length>0); if(!history.length){historyBox.innerHTML='<div class="empty"><div class="empty-art" aria-hidden="true"></div><b>لا توجد تحويلات محفوظة بعد.</b><span>سيظهر هنا آخر ما تحوّله.</span></div>';return}
         historyBox.innerHTML="";history.forEach(item=>{const types=item.direction==="gregorian-to-hijri"?{source:"gregorian",result:"hijri"}:{source:"hijri",result:"gregorian"};const title=item.title?`<span class="history-title">${escapeHtml(item.title)}</span>`:"";const row=document.createElement("div");row.className="history-item";row.innerHTML=`<button type="button" class="history-open"><span class="history-kind">${item.direction==="gregorian-to-hijri"?"م ← هـ":"هـ ← م"}</span><span class="history-dates"><b>${visibleText(item.source,types.source)}</b><i>→</i><strong>${visibleText(item.result,types.result)}</strong></span>${title}<small>${new Intl.DateTimeFormat("ar",{hour:"numeric",minute:"2-digit"}).format(item.time)}</small></button><button type="button" class="history-edit" aria-label="تعديل عنوان هذه العملية" title="تعديل العنوان">✎</button><button type="button" class="history-delete" aria-label="حذف هذه العملية" title="حذف العملية">×</button>`;row.querySelector(".history-open").addEventListener("click",()=>{direction=item.direction;fields={day:String(item.source.day),month:String(item.source.month),year:String(item.source.year)};titleInput.value=item.title||"";lastResult=item.result;renderMode();showStoredResult(item.result);document.querySelector("#date-fields input")?.focus();window.scrollTo({top:document.querySelector("#converter").offsetTop-18,behavior:"smooth"})});row.querySelector(".history-edit").addEventListener("click",()=>openTitleEditor(item,row));row.querySelector(".history-delete").addEventListener("click",()=>{history=history.filter(record=>record.id!==item.id);saveHistory();renderHistory()});historyBox.appendChild(row)})
       }
-      function showStoredResult(output){const names=typeNames();error.classList.remove("show");$("#result-title").textContent=names.result==="gregorian"?"التاريخ الميلادي":"التاريخ الهجري";$("#result-date").textContent=visibleText(output,names.result);$("#result-format").textContent=names.result==="gregorian"?"MM / DD / YYYY":"DD / MM / YYYY";placeholder.hidden=true;resultContent.hidden=false;result.classList.add("filled");saved.classList.add("show")}
+      function showStoredResult(output){const names=typeNames();error.classList.remove("show");$("#result-title").textContent=names.result==="gregorian"?"التاريخ الميلادي":"التاريخ الهجري";$("#result-date").textContent=visibleText(output,names.result);$("#result-format").textContent=patternText(names.result);placeholder.hidden=true;resultContent.hidden=false;result.classList.add("filled");saved.classList.add("show")}
       document.querySelectorAll(".direction").forEach(button=>button.addEventListener("click",()=>{direction=button.dataset.direction;fields={day:"",month:"",year:""};clearResult();renderMode();document.querySelector("#date-fields input")?.focus()}));
       $("#convert").addEventListener("click",()=>{if(!lastResult&&fieldsComplete())convert();copyCurrentResult()});$("#swap").addEventListener("click",()=>{const next=direction==="gregorian-to-hijri"?"hijri-to-gregorian":"gregorian-to-hijri";fields=lastResult?{day:String(lastResult.day),month:String(lastResult.month),year:String(lastResult.year)}:{day:"",month:"",year:""};direction=next;clearResult();renderMode();document.querySelector("#date-fields input")?.focus()});clearButton.addEventListener("click",()=>{history=[];saveHistory();renderHistory()});
       const gregorianMonths=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
       const hijriMonths=["محرم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"];
-      function monthWords(date,type){const month=(type==="gregorian"?gregorianMonths:hijriMonths)[date.month-1]||"";return `${month} ${date.year}${type==="gregorian"?" م":" هـ"}`}
+      function monthWords(date,type){return toDigits(`${monthName(date.month,type)} ${date.year}${type==="gregorian"?" م":" هـ"}`)}
       const resultWords=document.createElement("span");resultWords.className="result-words";$("#result-format").insertAdjacentElement("afterend",resultWords);
       function copyText(text){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(text);return new Promise((resolve,reject)=>{const area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy")?resolve():reject();area.remove()})}
       function saveCurrentConversion(){if(!lastResult||!lastSource)return;const title=titleInput.value.trim().slice(0,48);const duplicate=history[0]&&history[0].direction===direction&&same(history[0].source,lastSource)&&same(history[0].result,lastResult)&&(history[0].title||"")===title;if(!duplicate){history.unshift({id:Date.now()+"-"+Math.random().toString(36).slice(2,7),direction,source:lastSource,result:lastResult,title,time:Date.now()});history=history.slice(0,12);saveHistory();renderHistory()}saved.classList.add("show")}
-      function copyCurrentResult(){if(!lastResult)return;const text=`${lastResult.year}-${String(lastResult.month).padStart(2,"0")}-${String(lastResult.day).padStart(2,"0")}`;const status=$("#copy-status");copyText(text).then(()=>{saveCurrentConversion();status.textContent="تم النسخ";setTimeout(()=>status.textContent="",1800)}).catch(()=>{status.textContent="تعذر النسخ";setTimeout(()=>status.textContent="",1800)})}
+      function copyCurrentResult(){if(!lastResult)return;const text=visibleText(lastResult,typeNames().result);const status=$("#copy-status");copyText(text).then(()=>{saveCurrentConversion();status.textContent="تم النسخ";setTimeout(()=>status.textContent="",1800)}).catch(()=>{status.textContent="تعذر النسخ";setTimeout(()=>status.textContent="",1800)})}
       $("#copy").addEventListener("click",copyCurrentResult);
       new MutationObserver(()=>{if(lastResult)resultWords.textContent=monthWords(lastResult,typeNames().result)}).observe($("#result-date"),{childList:true});
       new MutationObserver(()=>{document.querySelectorAll(".history-open").forEach((button,index)=>{const item=history[index];if(!item)return;const types=item.direction==="gregorian-to-hijri"?{source:"gregorian",result:"hijri"}:{source:"hijri",result:"gregorian"};let words=button.querySelector(".history-words");if(!words){words=document.createElement("span");words.className="history-words";button.insertBefore(words,button.querySelector("small"))}words.textContent=`${monthWords(item.source,types.source)} ← ${monthWords(item.result,types.result)}`})}).observe(historyBox,{childList:true});
+      /* ===== تنسيق عرض التواريخ (يشمل المحول والحاسبة والسجلات) ===== */
+      const FMT_STORE="ink-calendar-single-file-format-v1";
+      const G_NAMES={gulf:gregorianMonths,levant:["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"],maghreb:["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"]};
+      const WEEKDAYS=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+      const ORDINALS=["","الأول","الثاني","الثالث","الرابع","الخامس","السادس","السابع","الثامن","التاسع","العاشر","الحادي عشر","الثاني عشر","الثالث عشر","الرابع عشر","الخامس عشر","السادس عشر","السابع عشر","الثامن عشر","التاسع عشر","العشرون","الحادي والعشرون","الثاني والعشرون","الثالث والعشرون","الرابع والعشرون","الخامس والعشرون","السادس والعشرون","السابع والعشرون","الثامن والعشرون","التاسع والعشرون","الثلاثون","الحادي والثلاثون"];
+      const FMT_OPTS={
+        order:{label:"ترتيب التاريخ",values:[["dmy","يوم / شهر / سنة"],["mdy","شهر / يوم / سنة"],["ymd","سنة / شهر / يوم"]]},
+        sep:{label:"الفاصل بين الأجزاء",values:[["/","/  شرطة مائلة"],["-","-  شرطة"],[".",".  نقطة"],[" ","مسافة"],["من","كلمة «من»"]]},
+        day:{label:"اليوم",values:[["num","رقم (7)"],["num2","رقمان (07)"],["ordinal","كتابةً (السابع)"]]},
+        month:{label:"الشهر",values:[["num","رقم (7)"],["num2","رقمان (07)"],["name","كتابةً (اسم الشهر)"]]},
+        year:{label:"السنة",values:[["full","كاملة (2024)"],["short","مختصرة (24)"]]},
+        weekday:{label:"اسم يوم الأسبوع",values:[["none","بدون"],["space","قبل التاريخ"],["comma","قبل التاريخ مع فاصلة"]]}
+      };
+      const NAMES_OPTS=[["gulf","يناير، فبراير، مارس…"],["levant","كانون الثاني، شباط، آذار…"],["maghreb","جانفي، فيفري، مارس…"]];
+      const DIGIT_OPTS=[["latin","أرقام إنجليزية (0 1 2)"],["arabic","أرقام هندية (٠ ١ ٢)"]];
+      const DEFAULT_FMT={digits:"latin",
+        gregorian:{order:"mdy",sep:"/",day:"num2",month:"num2",year:"full",weekday:"none",suffix:"none",names:"gulf"},
+        hijri:{order:"dmy",sep:"/",day:"num2",month:"num2",year:"full",weekday:"none",suffix:"none"}};
+      const fmtAllowed=(key,v)=>key==="names"?Object.prototype.hasOwnProperty.call(G_NAMES,v):key==="suffix"?["none","short","long"].includes(v):Boolean(FMT_OPTS[key])&&FMT_OPTS[key].values.some(o=>o[0]===v);
+      function loadFmt(){
+        const base=JSON.parse(JSON.stringify(DEFAULT_FMT));
+        try{const x=JSON.parse(localStorage.getItem(FMT_STORE)||"{}");
+          ["gregorian","hijri"].forEach(c=>Object.keys(base[c]).forEach(k=>{const v=x&&x[c]&&x[c][k];if(typeof v==="string"&&fmtAllowed(k,v))base[c][k]=v}));
+          if(x&&(x.digits==="latin"||x.digits==="arabic"))base.digits=x.digits}catch{}
+        return base;
+      }
+      let FMT=loadFmt();
+      function persistFmt(){try{localStorage.setItem(FMT_STORE,JSON.stringify(FMT))}catch{}}
+      function toDigits(text){return FMT.digits==="arabic"?String(text).replace(/[0-9]/g,d=>String.fromCharCode(1632+Number(d))):String(text)}
+      function monthName(m,type){return (type==="gregorian"?(G_NAMES[FMT.gregorian.names]||G_NAMES.gulf):hijriMonths)[m-1]||""}
+      const weekdayCache=new Map();
+      function weekdayName(d,type){
+        let g=d;
+        if(type==="hijri"){const key=d.year+"-"+d.month+"-"+d.day;if(!weekdayCache.has(key))weekdayCache.set(key,toGregorian(d));g=weekdayCache.get(key)}
+        return g?WEEKDAYS[utcDate(g.year,g.month,g.day).getUTCDay()]:"";
+      }
+      function formatDate(d,type,over){
+        const f=Object.assign({},FMT[type],over||{}), pad=n=>String(n).padStart(2,"0");
+        const parts_={
+          d:f.day==="ordinal"?(ORDINALS[d.day]||String(d.day)):f.day==="num2"?pad(d.day):String(d.day),
+          m:f.month==="name"?monthName(d.month,type):f.month==="num2"?pad(d.month):String(d.month),
+          y:f.year==="short"?pad(d.year%100):String(d.year)
+        };
+        let text=f.order.split("").map(k=>parts_[k]).join(f.sep==="من"?" من ":f.sep);
+        if(f.weekday!=="none"){const wd=weekdayName(d,type);if(wd)text=wd+(f.weekday==="comma"?"، ":" ")+text}
+        if(f.suffix==="short")text+=type==="gregorian"?" م":" هـ";
+        if(f.suffix==="long")text+=type==="gregorian"?" ميلادي":" هجري";
+        return toDigits(text);
+      }
+      function orderKeys(order){const map={d:"day",m:"month",y:"year"};return order.split("").map(k=>map[k])}
+      function orderHint(type){const o=FMT[type].order,names={d:"يوم",m:"شهر",y:"سنة"};return o.split("").map(k=>names[k]).join(" / ")+(type==="gregorian"&&o==="mdy"?" — بالترتيب الأمريكي":"")}
+      function patternText(type){const f=FMT[type],p={d:f.day==="ordinal"?"اليوم":f.day==="num2"?"DD":"D",m:f.month==="name"?"الشهر":f.month==="num2"?"MM":"M",y:f.year==="short"?"YY":"YYYY"};return f.order.split("").map(k=>p[k]).join(" / ")}
+      /* لوحة الخيارات */
+      const fmtPanel=$("#fmt-panel"), fmtToggle=$("#fmt-toggle");
+      function fmtSelect(cal,key,label,values,current){
+        const wrap=document.createElement("label");wrap.className="fmt-field";
+        wrap.innerHTML=`<span>${label}</span><select data-cal="${cal}" data-opt="${key}">${values.map(([v,t])=>`<option value="${v}"${v===current?" selected":""}>${t}</option>`).join("")}</select>`;
+        return wrap;
+      }
+      function updatePreviews(){
+        const now=new Date();
+        $("#fmt-gregorian .fmt-sample").textContent=formatDate(parts(gFormat,now),"gregorian");
+        $("#fmt-hijri .fmt-sample").textContent=formatDate(parts(hFormat,now),"hijri");
+      }
+      function buildFmtPanel(){
+        ["gregorian","hijri"].forEach(cal=>{
+          const box=$(`#fmt-${cal} .fmt-fields`);box.innerHTML="";
+          ["order","sep","day","month","year","weekday","suffix"].forEach(key=>{
+            const opt=key==="suffix"?{label:"رمز التقويم",values:[["none","بدون"],["short",cal==="gregorian"?"م":"هـ"],["long",cal==="gregorian"?"ميلادي":"هجري"]]}:FMT_OPTS[key];
+            box.appendChild(fmtSelect(cal,key,opt.label,opt.values,FMT[cal][key]));
+          });
+          if(cal==="gregorian")box.appendChild(fmtSelect(cal,"names","أسماء الأشهر الميلادية",NAMES_OPTS,FMT.gregorian.names));
+        });
+        const common=$("#fmt-common .fmt-fields");common.innerHTML="";
+        common.appendChild(fmtSelect("all","digits","شكل الأرقام",DIGIT_OPTS,FMT.digits));
+        updatePreviews();
+      }
+      function applyFormat(){
+        persistFmt();updatePreviews();
+        sourceFormat.textContent=orderHint(direction==="gregorian-to-hijri"?"gregorian":"hijri");
+        renderInputs();
+        if(lastResult&&!resultContent.hidden){const names=typeNames();$("#result-date").textContent=visibleText(lastResult,names.result);$("#result-format").textContent=patternText(names.result)}
+        renderHistory();
+        calcFormat.textContent=calcFormatText();renderCalcFields();renderCalcResult();renderCalcHistory();
+      }
+      fmtPanel.addEventListener("change",e=>{
+        const sel=e.target.closest("select");if(!sel)return;
+        const {cal,opt}=sel.dataset;
+        if(cal==="all")FMT.digits=sel.value;else FMT[cal][opt]=sel.value;
+        applyFormat();
+      });
+      function setFmtPanel(open){fmtPanel.hidden=!open;fmtToggle.setAttribute("aria-expanded",String(open))}
+      fmtToggle.addEventListener("click",()=>setFmtPanel(fmtPanel.hidden));
+      $("#fmt-close").addEventListener("click",()=>{setFmtPanel(false);fmtToggle.focus()});
+      $("#fmt-reset").addEventListener("click",()=>{FMT=JSON.parse(JSON.stringify(DEFAULT_FMT));buildFmtPanel();applyFormat()});
+      document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!fmtPanel.hidden){setFmtPanel(false);fmtToggle.focus()}});
+      buildFmtPanel();
+      /* ===== حاسبة الأيام ===== */
+      const calcToggle=$("#calc-toggle"), calcSection=$("#calc-section"), inputSection=$("#source-title").closest(".section"), resultSection=$("#result").closest(".section");
+      const calcFieldsBox=$("#calc-date-fields"), calcError=$("#calc-error"), calcResults=$("#calc-results"), calcFormat=$("#calc-format");
+      const calcTitle=$("#calc-title");
+      const calcAdd={days:$("#calc-days"),weeks:$("#calc-weeks"),months:$("#calc-months"),years:$("#calc-years")};
+            let calcType="gregorian", calcDate={day:"",month:"",year:""}, calcOut=null;
+      function normalizeDigits(v){return String(v).replace(/[\u0660-\u0669]/g,d=>d.charCodeAt(0)-1632).replace(/[\u06F0-\u06F9]/g,d=>d.charCodeAt(0)-1776).replace(/[\u2212\u2013\u2012]/g,"-")}
+      function cleanNumber(v,allowNeg,limit){v=normalizeDigits(v).trim();const neg=allowNeg&&v.startsWith("-");let digits=v.replace(/\D/g,"").slice(0,limit);if(allowNeg)digits=digits.replace(/^0+(?=\d)/,"");return (neg?"-":"")+digits}
+      function utcDate(y,m,d){const dt=new Date(0);dt.setUTCFullYear(y,m-1,d);return dt}
+      function gregorianMonthLength(y,m){const dt=new Date(0);dt.setUTCFullYear(y,m,0);return dt.getUTCDate()}
+      function calcOrder(){return orderKeys(FMT[calcType].order)}
+      function resetCalcResult(){calcOut=null;calcError.textContent="";calcError.classList.remove("show");calcResults.hidden=true}
+      function showCalcError(message){calcOut=null;calcError.textContent=message;calcError.classList.add("show");calcResults.hidden=true}
+      function renderCalcFields(){
+        const meta={day:"اليوم",month:"الشهر",year:"السنة"};calcFieldsBox.innerHTML="";
+        calcOrder().forEach((key,index)=>{const label=document.createElement("label");label.className="field"+(key==="year"?" year":"");label.innerHTML=`<span class="field-label"><i>${String(index+1).padStart(2,"0")}</i>${meta[key]}</span><input aria-label="${meta[key]}" data-key="${key}" inputmode="numeric" autocomplete="off" maxlength="${key==="year"?4:2}" value="${escapeAttr(calcDate[key]||"")}">`;calcFieldsBox.appendChild(label)});
+        const inputs=[...calcFieldsBox.querySelectorAll("input")];
+        inputs.forEach((input,idx)=>{
+          input.addEventListener("input",()=>{const max=Number(input.maxLength);const v=cleanNumber(input.value,false,max);input.value=v;calcDate[input.dataset.key]=v;resetCalcResult();if(v.length===max)(inputs[idx+1]||calcAdd.days).focus()});
+          input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();runCalc()}if(e.key==="Backspace"&&input.value===""&&inputs[idx-1]){e.preventDefault();inputs[idx-1].focus()}});
+        });
+      }
+      Object.values(calcAdd).forEach(input=>{
+        input.addEventListener("input",()=>{const v=cleanNumber(input.value,true,6);if(v!==input.value)input.value=v;resetCalcResult()});
+        input.addEventListener("focus",()=>requestAnimationFrame(()=>input.select()));
+        input.addEventListener("blur",()=>{if(input.value===""||input.value==="-")input.value="0"});
+        input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();runCalc()}});
+      });
+      calcTitle.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();runCalc()}});
+      function durationValue(input){const n=parseInt(input.value,10);return Number.isFinite(n)?n:0}
+      function runCalc(save=true){
+        resetCalcResult();
+        const start=numberDate(calcDate);
+        if(!start||calcDate.year.length!==4){showCalcError("أدخل تاريخ البداية كاملاً: اليوم والشهر والسنة (٤ أرقام).");return}
+        const add={days:durationValue(calcAdd.days),weeks:durationValue(calcAdd.weeks),months:durationValue(calcAdd.months),years:durationValue(calcAdd.years)};
+        const total=start.year*12+(start.month-1)+add.years*12+add.months, ny=Math.floor(total/12), nm=total-ny*12+1;
+        const outOfRange="الناتج خارج النطاق المدعوم. جرّب مدة أقصر.";
+        let base;
+        if(calcType==="gregorian"){
+          const check=utcDate(start.year,start.month,start.day);
+          if(check.getUTCFullYear()!==start.year||check.getUTCMonth()!==start.month-1||check.getUTCDate()!==start.day){showCalcError("هذا التاريخ الميلادي غير صالح.");return}
+          if(ny<1||ny>9999){showCalcError(outOfRange);return}
+          base=utcDate(ny,nm,Math.min(start.day,gregorianMonthLength(ny,nm)));
+        }else{
+          if(!toGregorian(start)){showCalcError("تعذر العثور على هذا التاريخ الهجري ضمن نطاق التقويم المدعوم.");return}
+          if(ny<1){showCalcError(outOfRange);return}
+          let day=start.day,g=toGregorian({day,month:nm,year:ny});
+          while(!g&&day>29){day--;g=toGregorian({day,month:nm,year:ny})}
+          if(!g){showCalcError(outOfRange);return}
+          base=utcDate(g.year,g.month,g.day);
+        }
+        const final=new Date(base.getTime()+(add.days+add.weeks*7)*86400000);
+        const fy=final.getUTCFullYear();
+        if(Number.isNaN(fy)||fy<1||fy>9999){showCalcError(outOfRange);return}
+        const g={day:final.getUTCDate(),month:final.getUTCMonth()+1,year:fy}, h=parts(hFormat,final);
+        if(![h.day,h.month,h.year].every(Number.isFinite)||h.year<1){showCalcError(outOfRange);return}
+        calcOut={g,h};if(save)saveCalcHistory({type:calcType,title:calcTitle.value.trim().slice(0,48),start,add,g,h});
+        renderCalcResult();
+        calcResults.hidden=false;
+      }
+      const WRITTEN={order:"dmy",sep:" ",day:"num",month:"name",year:"full",weekday:"space",suffix:"short"};
+      function renderCalcResult(){
+        if(!calcOut)return;
+        $("#calc-g-date").textContent=gregorianText(calcOut.g);
+        $("#calc-h-date").textContent=hijriText(calcOut.h);
+        $("#calc-g-words").textContent=formatDate(calcOut.g,"gregorian",WRITTEN);
+        $("#calc-h-words").textContent=formatDate(calcOut.h,"hijri",WRITTEN);
+      }
+      function copyCalc(kind,status){
+        if(!calcOut)return;const text=kind==="gregorian"?gregorianText(calcOut.g):hijriText(calcOut.h);
+        const done=message=>{status.textContent=message;setTimeout(()=>{status.textContent=""},1800)};
+        copyText(text).then(()=>done("تم النسخ")).catch(()=>done("تعذر النسخ"));
+      }
+      function calcFormatText(){return orderHint(calcType)}
+      /* سجل عمليات الحاسبة (منفصل عن سجل التحويلات) */
+      const CALC_STORE="ink-calendar-single-file-calc-history-v1", ADD_KEYS=["days","weeks","months","years"];
+      const calcHistoryBox=$("#calc-history"), calcClearButton=$("#calc-clear"), calcArchive=$("#calc-archive"), mainArchive=$("#history").closest(".archive");
+      const isDate=d=>d&&[d.day,d.month,d.year].every(Number.isFinite);
+      function loadCalcHistory(){try{const x=JSON.parse(localStorage.getItem(CALC_STORE)||"[]");return Array.isArray(x)?x.filter(i=>i&&(i.type==="gregorian"||i.type==="hijri")&&isDate(i.start)&&isDate(i.g)&&isDate(i.h)&&i.add&&ADD_KEYS.every(k=>Number.isFinite(i.add[k]))):[]}catch{return[]}}
+      let calcHistory=loadCalcHistory();
+      function persistCalcHistory(){try{localStorage.setItem(CALC_STORE,JSON.stringify(calcHistory))}catch{}}
+      function durationHtml(add){const units=[["years","سنة"],["months","شهر"],["weeks","أسبوع"],["days","يوم"]];const list=units.filter(([k])=>add[k]).map(([k,u])=>`<bdi dir="ltr">${add[k]>0?"+":"-"}${Math.abs(add[k])}</bdi> ${u}`);return list.length?list.join("، "):"بدون إضافة"}
+      function saveCalcHistory(entry){
+        const top=calcHistory[0];
+        if(top&&top.type===entry.type&&same(top.start,entry.start)&&ADD_KEYS.every(k=>top.add[k]===entry.add[k])&&(top.title||"")===(entry.title||""))return;
+        calcHistory.unshift({id:Date.now()+"-"+Math.random().toString(36).slice(2,7),type:entry.type,title:entry.title||"",start:entry.start,add:entry.add,g:entry.g,h:entry.h,time:Date.now()});
+        calcHistory=calcHistory.slice(0,12);persistCalcHistory();renderCalcHistory();
+      }
+      function restoreCalc(item){
+        calcType=item.type;calcDate={day:String(item.start.day),month:String(item.start.month),year:String(item.start.year)};
+        document.querySelectorAll(".calc-type").forEach(x=>x.classList.toggle("active",x.dataset.type===calcType));
+        calcFormat.textContent=calcFormatText();
+        ADD_KEYS.forEach(k=>{calcAdd[k].value=String(item.add[k])});
+        calcTitle.value=typeof item.title==="string"?item.title:"";
+        renderCalcFields();runCalc(false);
+        window.scrollTo({top:document.querySelector("#converter").offsetTop-18,behavior:"smooth"});
+      }
+      function openCalcTitleEditor(item,row){
+        if(row.querySelector(".history-title-editor"))return;
+        const editor=document.createElement("div");editor.className="history-title-editor";
+        editor.innerHTML='<input type="text" maxlength="48" placeholder="عنوان العملية"><button type="button">حفظ</button><button type="button">إلغاء</button>';
+        const input=editor.querySelector("input");input.value=typeof item.title==="string"?item.title:"";
+        const commit=()=>{item.title=input.value.trim().slice(0,48);persistCalcHistory();renderCalcHistory()};
+        const buttons=editor.querySelectorAll("button");
+        buttons[0].addEventListener("click",commit);buttons[1].addEventListener("click",renderCalcHistory);
+        input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();commit()}if(e.key==="Escape"){e.preventDefault();renderCalcHistory()}});
+        row.appendChild(editor);input.focus();input.select();
+      }
+      function renderCalcHistory(){
+        calcClearButton.classList.toggle("show",calcHistory.length>0);
+        if(!calcHistory.length){calcHistoryBox.innerHTML='<div class="empty"><div class="empty-art" aria-hidden="true"></div><b>لا توجد عمليات محفوظة بعد.</b><span>سيظهر هنا آخر ما تحسبه.</span></div>';return}
+        calcHistoryBox.innerHTML="";
+        calcHistory.forEach(item=>{
+          const greg=item.type==="gregorian", same_=greg?item.g:item.h, other=greg?item.h:item.g;
+          const startText=greg?gregorianText(item.start):hijriText(item.start), sameText=greg?gregorianText(same_):hijriText(same_), otherText=greg?hijriText(other):gregorianText(other);
+          const row=document.createElement("div");row.className="history-item";
+          const title=typeof item.title==="string"?item.title.trim():"";
+          const head=title?`<span class="history-title">${escapeHtml(title)}</span><span class="history-words">${durationHtml(item.add)}</span>`:`<span class="history-title">${durationHtml(item.add)}</span>`;
+          row.innerHTML=`<button type="button" class="history-open"><span class="history-kind">${greg?"م":"هـ"}</span><span class="history-dates"><b>${startText}</b><i>→</i><strong>${sameText}</strong></span>${head}<span class="history-words">${greg?"الهجري":"الميلادي"}: ${otherText}</span><small>${new Intl.DateTimeFormat("ar",{hour:"numeric",minute:"2-digit"}).format(item.time)}</small></button><button type="button" class="history-edit" aria-label="تعديل عنوان هذه العملية" title="تعديل العنوان">✎</button><button type="button" class="history-delete" aria-label="حذف هذه العملية" title="حذف العملية">×</button>`;
+          row.querySelector(".history-open").addEventListener("click",()=>restoreCalc(item));
+          row.querySelector(".history-edit").addEventListener("click",()=>openCalcTitleEditor(item,row));
+          row.querySelector(".history-delete").addEventListener("click",()=>{calcHistory=calcHistory.filter(r=>r.id!==item.id);persistCalcHistory();renderCalcHistory()});
+          calcHistoryBox.appendChild(row);
+        });
+      }
+      calcClearButton.addEventListener("click",()=>{calcHistory=[];persistCalcHistory();renderCalcHistory()});
+      renderCalcHistory();
+      function setCalc(on){
+        calcSection.hidden=!on;inputSection.hidden=on;resultSection.hidden=on;calcArchive.hidden=!on;mainArchive.hidden=on;
+        calcToggle.classList.toggle("active",on);calcToggle.setAttribute("aria-pressed",String(on));
+        document.querySelectorAll(".direction").forEach(b=>b.classList.toggle("active",!on&&b.dataset.direction===direction));
+        (on?calcFieldsBox:fieldsBox).querySelector("input")?.focus();
+      }
+      calcToggle.addEventListener("click",()=>setCalc(true));
+      document.querySelectorAll(".direction").forEach(b=>b.addEventListener("click",()=>setCalc(false)));
+      document.querySelectorAll(".calc-type").forEach(b=>b.addEventListener("click",()=>{
+        calcType=b.dataset.type;calcDate={day:"",month:"",year:""};
+        document.querySelectorAll(".calc-type").forEach(x=>x.classList.toggle("active",x===b));
+        calcFormat.textContent=calcFormatText();
+        resetCalcResult();renderCalcFields();calcFieldsBox.querySelector("input")?.focus();
+      }));
+      $("#calc-run").addEventListener("click",()=>runCalc());
+      $("#calc-g-copy").addEventListener("click",()=>copyCalc("gregorian",$("#calc-g-status")));
+      $("#calc-h-copy").addEventListener("click",()=>copyCalc("hijri",$("#calc-h-status")));
+      renderCalcFields();
       renderMode();renderHistory();document.querySelector("#date-fields input")?.focus();
     })();
   </script>
