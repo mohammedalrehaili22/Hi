@@ -96,6 +96,14 @@
     .diff-value{display:block;margin:2px 0 6px;color:var(--ink);font:700 22px Tahoma;line-height:1.6}
     .diff-sub{display:block;color:#657781;font-size:12px;line-height:1.8}
     .workspace.no-archive{grid-template-columns:minmax(0,1fr)}
+    .direction-seg{margin-top:18px}
+    .direction-seg[hidden]{display:none}
+    .direction-seg .direction{margin:0;padding:10px 20px;border:0;background:rgba(255,253,248,.76);color:#526572;font:700 13px Tahoma}
+    .direction-seg .direction+.direction{border-right:1px solid var(--line)}
+    .direction-seg .direction.active{background:var(--ink);color:#fff}
+    .direction-seg .direction:active{transform:scale(.97)}
+    .direction-seg .direction:focus-visible{outline:3px solid rgba(197,93,60,.42);outline-offset:3px}
+    @media(max-width:480px){.direction-seg .direction{margin:0;padding:10px 14px;font-size:12px}}
     .diff-check small{margin-right:6px;color:#7b675b;font-size:11px}
     .primary:disabled{opacity:.6;cursor:progress}
     .holiday-box{grid-column:1/-1;margin-top:16px;padding:12px 16px;border:1px solid var(--line);background:rgba(255,253,248,.76);font-size:13px;line-height:1.9}
@@ -147,11 +155,14 @@
           <div class="timeline" aria-hidden="true"></div>
           <div class="section">
             <span class="node" aria-hidden="true"></span><p class="marker">01 / الاتجاه</p>
-            <div class="direction-row" role="group" aria-label="اتجاه التحويل">
-              <button class="direction active" data-direction="hijri-to-gregorian" type="button">هجري ← ميلادي</button>
-              <button class="direction" data-direction="gregorian-to-hijri" type="button">ميلادي ← هجري</button>
+            <div class="direction-row" role="group" aria-label="الأدوات">
+              <button class="calc-tab active" id="convert-toggle" type="button" aria-pressed="true">محول التاريخ</button>
               <button class="calc-tab" id="calc-toggle" type="button" aria-pressed="false">حاسبة الأيام</button>
               <button class="calc-tab" id="diff-toggle" type="button" aria-pressed="false">الفرق بين تاريخين</button>
+            </div>
+            <div class="calc-type-row direction-seg" id="direction-seg" role="group" aria-label="اتجاه التحويل">
+              <button class="direction active" data-direction="hijri-to-gregorian" type="button">من هجري إلى ميلادي</button>
+              <button class="direction" data-direction="gregorian-to-hijri" type="button">من ميلادي إلى هجري</button>
             </div>
           </div>
 
@@ -187,7 +198,7 @@
               <label class="field"><span class="field-label">سنوات</span><input id="calc-years" aria-label="عدد السنوات" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
             </div>
             <label class="entry-title"><span>عنوان العملية <small>اختياري</small></span><input id="calc-title" type="text" maxlength="48" autocomplete="off" placeholder="مثال: نهاية مدة العقد" /></label>
-            <label class="diff-check"><input type="checkbox" id="calc-excl"><span>استبعاد الإجازات الرسمية السعودية <small>عبر Calendarific</small></span></label>
+            <label class="diff-check"><input type="checkbox" id="calc-excl"><span>استبعاد الإجازات الرسمية السعودية وعطلة الجمعة والسبت <small>عبر Calendarific</small></span></label>
             <p class="tip">تُضاف السنوات والشهور أولاً بتقويم تاريخ البداية، ثم الأسابيع والأيام. أدخل رقماً سالباً (مثل -7) للطرح.</p>
             <div class="actions calc-actions"><button class="primary" id="calc-run" type="button"><span>＋</span> احسب التاريخ</button></div>
             <p class="error" id="calc-error" role="alert"></p>
@@ -218,8 +229,9 @@
                 <div class="date-fields" style="margin-top:14px"></div>
               </div>
             </div>
+            <label class="entry-title"><span>عنوان العملية <small>اختياري</small></span><input id="diff-title" type="text" maxlength="48" autocomplete="off" placeholder="مثال: مدة التنفيذ" /></label>
             <label class="diff-check"><input type="checkbox" id="diff-inclusive"><span>شمل يوم النهاية في العدد (يُحتسب يوما البداية والنهاية معاً)</span></label>
-            <label class="diff-check" style="margin-top:12px"><input type="checkbox" id="diff-excl"><span>استبعاد الإجازات الرسمية السعودية <small>عبر Calendarific</small></span></label>
+            <label class="diff-check" style="margin-top:12px"><input type="checkbox" id="diff-excl"><span>استبعاد الإجازات الرسمية السعودية وعطلة الجمعة والسبت <small>عبر Calendarific</small></span></label>
             <p class="tip">لكل تاريخ تقويمه الخاص (ميلادي أو هجري)، ويُحسب الفرق بالأيام والأسابيع والأشهر بالتقويمين معاً.</p>
             <div class="actions calc-actions"><button class="primary" id="diff-run" type="button"><span>↔</span> احسب الفرق</button></div>
             <p class="error" id="diff-error" role="alert"></p>
@@ -245,6 +257,11 @@
         <aside class="archive" id="calc-archive" aria-label="آخر عمليات الحاسبة" hidden>
           <div class="archive-head"><div><p class="marker">الأرشيف المحلي</p><h2>◷ آخر العمليات</h2></div><span class="stamp">محلي</span><button class="clear" id="calc-clear" type="button">⌫ مسح</button></div>
           <div class="history calc-history" id="calc-history"></div><p class="storage">يُحفظ السجل على هذا الجهاز فقط، داخل ذاكرة المتصفح المحلية.</p>
+        </aside>
+
+        <aside class="archive" id="diff-archive" aria-label="آخر عمليات الفرق بين تاريخين" hidden>
+          <div class="archive-head"><div><p class="marker">الأرشيف المحلي</p><h2>◷ آخر العمليات</h2></div><span class="stamp">محلي</span><button class="clear" id="diff-clear" type="button">⌫ مسح</button></div>
+          <div class="history calc-history" id="diff-history"></div><p class="storage">يُحفظ السجل على هذا الجهاز فقط، داخل ذاكرة المتصفح المحلية.</p>
         </aside>
       </div>
       <footer class="footer">محول التاريخ <span>—</span> التقويم الهجري يعتمد إعداد أم القرى في متصفحك.</footer>
@@ -406,7 +423,7 @@
         if(lastResult&&!resultContent.hidden){const names=typeNames();$("#result-date").textContent=visibleText(lastResult,names.result);$("#result-format").textContent=patternText(names.result)}
         renderHistory();
         calcFormat.textContent=calcFormatText();renderCalcFields();renderCalcResult();renderCalcHistory();
-        diffBlocks.start.render();diffBlocks.end.render();renderDiffResult();
+        diffBlocks.start.render();diffBlocks.end.render();renderDiffResult();renderDiffHistory();
       }
       fmtPanel.addEventListener("change",e=>{
         const sel=e.target.closest("select");if(!sel)return;
@@ -422,12 +439,15 @@
       buildFmtPanel();
       /* ===== الإجازات الرسمية السعودية (Calendarific) ===== */
       const CALENDARIFIC_API_KEY="9UnxKXDeaLI6M4kyPUXtNHvKhOxZuUr4";
-      const HOLIDAY_CACHE_KEY="ink-calendar-single-file-holidays-sa-v1", HOLIDAY_TTL=30*864e5, HOLIDAY_MAX_YEARS=10;
+      const HOLIDAY_CACHE_KEY="ink-calendar-single-file-holidays-sa-v1";
+      const HOLIDAY_TTL=30*864e5, HOLIDAY_MAX_YEARS=10;
       const HOLIDAY_EXCLUDED_TYPES=["observance","season","local holiday"];
-      const holidayMemory=new Map();
+      const holidayMemory=new Map(), holidayInflight=new Map(), holidayStaleYears=new Set();
       const calcExcl=$("#calc-excl"), diffExcl=$("#diff-excl");
       let calcToken=0, diffToken=0;
       const holidayError=message=>Object.assign(new Error(message),{userFacing:true});
+      const holidayMessage=err=>err&&err.userFacing?err.message:"حدث خطأ غير متوقع أثناء جلب الإجازات الرسمية.";
+      const tooLongError=()=>holidayError(`المدة تمتد على أكثر من ${toDigits(String(HOLIDAY_MAX_YEARS))} سنوات. قلّل المدة أو عطّل استبعاد الإجازات.`);
       /* يُبقي فقط الإجازات التي نوعها "National holiday" ويستبعد أي حدث نوعه Observance أو Season أو Local holiday */
       function isOfficialHoliday(h){
         if(!h||typeof h!=="object")return false;
@@ -442,12 +462,10 @@
       }
       const isoOfDate=dt=>dt.toISOString().slice(0,10);
       const isoToDate=iso=>{const [y,m,d]=iso.split("-").map(Number);return utcDate(y,m,d)};
+      const isWeekendDay=dt=>{const d=dt.getUTCDay();return d===5||d===6};
       function readHolidayCache(){try{const c=JSON.parse(localStorage.getItem(HOLIDAY_CACHE_KEY)||"{}");return c&&typeof c==="object"?c:{}}catch{return{}}}
       function writeHolidayCache(cache){try{localStorage.setItem(HOLIDAY_CACHE_KEY,JSON.stringify(cache))}catch{}}
-      async function loadHolidayYear(year){
-        if(holidayMemory.has(year))return holidayMemory.get(year);
-        const cache=readHolidayCache(), hit=cache[year];
-        if(hit&&Array.isArray(hit.items)&&Number.isFinite(hit.savedAt)&&Date.now()-hit.savedAt<HOLIDAY_TTL){holidayMemory.set(year,hit.items);return hit.items}
+      async function fetchHolidayYear(year){
         if(typeof fetch!=="function")throw holidayError("المتصفح لا يدعم جلب الإجازات الرسمية.");
         const url=`https://calendarific.com/api/v2/holidays?api_key=${encodeURIComponent(CALENDARIFIC_API_KEY)}&country=SA&year=${year}`;
         const ctl=typeof AbortController==="function"?new AbortController():null, timer=ctl?setTimeout(()=>ctl.abort(),15000):null;
@@ -463,15 +481,41 @@
         /* التصفية تتم قبل الحفظ في الذاكرة المحلية وقبل الاستخدام */
         const seen=new Set(), items=[];
         list.filter(isOfficialHoliday).forEach(h=>{const iso=holidayIsoOf(h);if(iso&&!seen.has(iso)){seen.add(iso);items.push({date:iso,name:String(h.name||"")})}});
+        if(!items.length)throw holidayError(`لم تُرجع الخدمة أي إجازة رسمية لعام ${toDigits(String(year))}، لذلك لم يُعتمد الحساب.`);
         items.sort((a,b)=>a.date<b.date?-1:1);
-        cache[year]={savedAt:Date.now(),items};writeHolidayCache(cache);holidayMemory.set(year,items);
         return items;
       }
-      async function loadHolidayMap(fromYear,toYear){
-        if(toYear-fromYear+1>HOLIDAY_MAX_YEARS)throw holidayError(`المدة تمتد على أكثر من ${toDigits(String(HOLIDAY_MAX_YEARS))} سنوات. قلّل المدة أو عطّل استبعاد الإجازات الرسمية.`);
-        const map=new Map();
-        for(let y=fromYear;y<=toYear;y++)for(const it of await loadHolidayYear(y))if(!map.has(it.date))map.set(it.date,it.name);
-        return map;
+      /* توفير الطلبات دون تغيير النتيجة:
+         ١) طلب واحد لكل سنة يُحفظ محلياً؛ السنوات الماضية لا تُطلب مجدداً، والحالية والقادمة تُجدَّد كل ٣٠ يوماً.
+         ٢) تُطلب السنة فقط عند الوصول إليها فعلاً أثناء العدّ.
+         ٣) الطلبات المتزامنة للسنة نفسها تُدمج في طلب واحد.
+         ٤) عند تعذر التحديث تُستخدم النسخة المحفوظة إن وُجدت مع تنبيه. */
+      function loadHolidayYear(year){
+        if(holidayMemory.has(year))return Promise.resolve(holidayMemory.get(year));
+        if(holidayInflight.has(year))return holidayInflight.get(year);
+        const task=(async()=>{
+          const cache=readHolidayCache(), hit=cache[year];
+          const stored=hit&&Array.isArray(hit.items)&&hit.items.length&&Number.isFinite(hit.savedAt);
+          const fresh=stored&&(year<new Date().getUTCFullYear()||Date.now()-hit.savedAt<HOLIDAY_TTL);
+          if(fresh){holidayMemory.set(year,hit.items);return hit.items}
+          try{
+            const items=await fetchHolidayYear(year);
+            cache[year]={savedAt:Date.now(),items};writeHolidayCache(cache);holidayMemory.set(year,items);
+            return items;
+          }catch(err){
+            if(stored){holidayStaleYears.add(year);holidayMemory.set(year,hit.items);return hit.items}
+            throw err;
+          }
+        })();
+        holidayInflight.set(year,task);
+        const done=()=>holidayInflight.delete(year);task.then(done,done);
+        return task;
+      }
+      async function runYearMap(ym,run,year){
+        if(ym.size>=HOLIDAY_MAX_YEARS)throw tooLongError();
+        const items=await loadHolidayYear(year);
+        if(holidayStaleYears.has(year))run.stale=true;
+        const map=new Map(items.map(x=>[x.date,x.name]));ym.set(year,map);return map;
       }
       function holidayNameAr(name){
         const n=String(name).toLowerCase();
@@ -482,18 +526,21 @@
         if(/adha/.test(n))return "عيد الأضحى";
         return String(name);
       }
-      function holidayBoxHtml(list){
-        if(!list.length)return '<p class="holiday-empty">لا توجد إجازات رسمية سعودية ضمن هذه المدة.</p>';
-        const items=list.map(x=>{const dt=isoToDate(x.iso);return `<li><span>${escapeHtml(holidayNameAr(x.name))}</span><bdi>${formatDate(gParts(dt),"gregorian",{suffix:"short"})}</bdi><bdi>${formatDate(hParts(dt),"hijri",{suffix:"short"})}</bdi></li>`}).join("");
-        return `<p class="holiday-sum">الإجازات الرسمية المستبعدة: <b>${countText(list.length,"days")}</b></p><ul>${items}</ul>`;
+      function holidayBoxHtml(list,weekendDays,stale){
+        const total=list.length+weekendDays;
+        let html=`<p class="holiday-sum">الأيام المستبعدة: <b>${countText(total,"days")}</b> — إجازات رسمية: ${countText(list.length,"days")}، وعطلة الجمعة والسبت: ${countText(weekendDays,"days")}</p>`;
+        if(list.length){
+          html+="<ul>"+list.map(x=>{const dt=isoToDate(x.iso);return `<li><span>${escapeHtml(holidayNameAr(x.name))}</span><bdi>${formatDate(gParts(dt),"gregorian",{suffix:"short"})}</bdi><bdi>${formatDate(hParts(dt),"hijri",{suffix:"short"})}</bdi></li>`}).join("")+"</ul>";
+        }else html+='<p class="holiday-empty">لا توجد إجازات رسمية سعودية ضمن هذه المدة.</p>';
+        if(stale)html+='<p class="diff-note">تعذر تحديث بيانات الإجازات من Calendarific، فاستُخدمت نسخة محفوظة مسبقاً على هذا الجهاز.</p>';
+        return html;
       }
       function setBusy(button,busy,label){
         if(busy){if(!button.dataset.label)button.dataset.label=button.innerHTML;button.disabled=true;button.textContent=label}
         else if(button.dataset.label){button.innerHTML=button.dataset.label;delete button.dataset.label;button.disabled=false}
       }
-      const holidayMessage=err=>err&&err.userFacing?err.message:"حدث خطأ غير متوقع أثناء جلب الإجازات الرسمية.";
       calcExcl.addEventListener("change",()=>resetCalcResult());
-      diffExcl.addEventListener("change",()=>{if(diffOut)runDiff()});
+      diffExcl.addEventListener("change",()=>resetDiffResult());
       /* ===== حاسبة الأيام ===== */
       const calcToggle=$("#calc-toggle"), calcSection=$("#calc-section"), inputSection=$("#source-title").closest(".section"), resultSection=$("#result").closest(".section");
       const calcFieldsBox=$("#calc-date-fields"), calcError=$("#calc-error"), calcResults=$("#calc-results"), calcFormat=$("#calc-format");
@@ -550,17 +597,25 @@
         let final=new Date(base.getTime()+(add.days+add.weeks*7)*86400000);
         let fy=final.getUTCFullYear();
         if(Number.isNaN(fy)||fy<1||fy>9999){showCalcError(outOfRange);return}
-        const exclude=calcExcl.checked;let skipped=[];
+        const exclude=calcExcl.checked;let skipped=[],weekendDays=0,stale=false;
         if(exclude){
-          /* المدة بالأيام لا تشمل الإجازات الرسمية: تُعدّ فقط الأيام غير الإجازة بعد يوم البداية */
+          /* المدة بالأيام لا تشمل الإجازات الرسمية ولا الجمعة والسبت: تُعدّ فقط الأيام غير المستبعدة بعد يوم البداية */
           const total=Math.round((final-startDate)/864e5);
           setBusy($("#calc-run"),true,"جارٍ جلب الإجازات…");
           try{
-            const map=await loadHolidayMap(Math.min(startDate.getUTCFullYear(),fy)-(total<0?1:0),Math.max(startDate.getUTCFullYear(),fy)+(total>0?1:0));
-            if(token!==calcToken)return;
-            const step=total>=0?1:-1;let left=Math.abs(total),cur=startDate;
-            while(left>0){cur=new Date(cur.getTime()+step*864e5);const iso=isoOfDate(cur);if(map.has(iso))skipped.push({iso,name:map.get(iso)});else left--}
-            final=cur;
+            if(Math.abs(total)>HOLIDAY_MAX_YEARS*366)throw tooLongError();
+            const ym=new Map(), run={stale:false}, step=total>=0?1:-1;
+            let left=Math.abs(total),cur=startDate;
+            while(left>0){
+              cur=new Date(cur.getTime()+step*864e5);
+              const y=cur.getUTCFullYear();let map=ym.get(y);
+              if(!map){map=await runYearMap(ym,run,y);if(token!==calcToken)return}
+              const iso=isoOfDate(cur);
+              if(map.has(iso))skipped.push({iso,name:map.get(iso)});
+              else if(isWeekendDay(cur))weekendDays++;
+              else left--;
+            }
+            final=cur;stale=run.stale;
           }catch(err){if(token===calcToken)showCalcError(holidayMessage(err));return}
           finally{if(token===calcToken)setBusy($("#calc-run"),false)}
           fy=final.getUTCFullYear();
@@ -568,7 +623,7 @@
         }
         const g={day:final.getUTCDate(),month:final.getUTCMonth()+1,year:fy}, h=parts(hFormat,final);
         if(![h.day,h.month,h.year].every(Number.isFinite)||h.year<1){showCalcError(outOfRange);return}
-        calcOut={g,h,excl:exclude,skipped};if(save)saveCalcHistory({type:calcType,title:calcTitle.value.trim().slice(0,48),start,add,g,h,excl:exclude});
+        calcOut={g,h,excl:exclude,skipped,weekendDays,stale};if(save)saveCalcHistory({type:calcType,title:calcTitle.value.trim().slice(0,48),start,add,g,h,excl:exclude});
         renderCalcResult();
         calcResults.hidden=false;
       }
@@ -580,7 +635,7 @@
         $("#calc-g-words").textContent=formatDate(calcOut.g,"gregorian",WRITTEN);
         $("#calc-h-words").textContent=formatDate(calcOut.h,"hijri",WRITTEN);
         const box=$("#calc-holidays");
-        if(calcOut.excl){box.innerHTML=holidayBoxHtml(calcOut.skipped||[]);box.hidden=false}else{box.innerHTML="";box.hidden=true}
+        if(calcOut.excl){box.innerHTML=holidayBoxHtml(calcOut.skipped||[],calcOut.weekendDays||0,calcOut.stale);box.hidden=false}else{box.innerHTML="";box.hidden=true}
       }
       function copyCalc(kind,status){
         if(!calcOut)return;const text=kind==="gregorian"?gregorianText(calcOut.g):hijriText(calcOut.h);
@@ -631,7 +686,7 @@
           const greg=item.type==="gregorian", same_=greg?item.g:item.h, other=greg?item.h:item.g;
           const startText=greg?gregorianText(item.start):hijriText(item.start), sameText=greg?gregorianText(same_):hijriText(same_), otherText=greg?hijriText(other):gregorianText(other);
           const row=document.createElement("div");row.className="history-item";
-          const title=typeof item.title==="string"?item.title.trim():"", dur=durationHtml(item.add)+(item.excl?" (دون الإجازات)":"");
+          const title=typeof item.title==="string"?item.title.trim():"", dur=durationHtml(item.add)+(item.excl?" (دون الإجازات والعطلة)":"");
           const head=title?`<span class="history-title">${escapeHtml(title)}</span><span class="history-words">${dur}</span>`:`<span class="history-title">${dur}</span>`;
           row.innerHTML=`<button type="button" class="history-open"><span class="history-kind">${greg?"م":"هـ"}</span><span class="history-dates"><b>${startText}</b><i>→</i><strong>${sameText}</strong></span>${head}<span class="history-words">${greg?"الهجري":"الميلادي"}: ${otherText}</span><small>${new Intl.DateTimeFormat("ar",{hour:"numeric",minute:"2-digit"}).format(item.time)}</small></button><button type="button" class="history-edit" aria-label="تعديل عنوان هذه العملية" title="تعديل العنوان">✎</button><button type="button" class="history-delete" aria-label="حذف هذه العملية" title="حذف العملية">×</button>`;
           row.querySelector(".history-open").addEventListener("click",()=>restoreCalc(item));
@@ -664,8 +719,13 @@
           root.querySelectorAll(".diff-type").forEach(x=>x.classList.toggle("active",x===b));
           resetDiffResult();render();box.querySelector("input")?.focus();
         }));
+        function set(type,values){
+          state.type=type;state.values={day:"",month:"",year:"",...values};
+          root.querySelectorAll(".diff-type").forEach(x=>x.classList.toggle("active",x.dataset.type===type));
+          render();
+        }
         render();
-        return {root,box,state,render};
+        return {root,box,state,render,set};
       }
       const diffBlocks={start:makeDateBlock($("#diff-start"),()=>diffBlocks.end.box.querySelector("input")),end:makeDateBlock($("#diff-end"),()=>diffInclusive)};
       function readDiffDate(block,label){
@@ -698,29 +758,39 @@
         if(!a)return null;
         return {years:Math.floor(tm/12),months:tm%12,totalMonths:tm,days:Math.round((e-a)/864e5)};
       }
-      async function runDiff(){
+      async function runDiff(save=true){
         resetDiffResult();const token=++diffToken;
         const a=readDiffDate(diffBlocks.start,"تاريخ البداية");if(a.error){showDiffError(a.error);return}
         const b=readDiffDate(diffBlocks.end,"تاريخ النهاية");if(b.error){showDiffError(b.error);return}
+        const startEntered=numberDate(diffBlocks.start.state.values), endEntered=numberDate(diffBlocks.end.state.values);
         let s=a.date, e=b.date;const swapped=e<s;
         if(swapped){const t=s;s=e;e=t}
         const inclusive=diffInclusive.checked, eff=inclusive?new Date(e.getTime()+864e5):e;
-        const baseDays=Math.round((eff-s)/864e5), excl=diffExcl.checked;let holidays=[];
+        const baseDays=Math.round((eff-s)/864e5), excl=diffExcl.checked;
+        let holidays=[],weekendDays=0,stale=false;
         if(excl){
-          /* الأيام المعدودة: (البداية، النهاية] وتشمل يوم البداية عند تفعيل «شمل يوم النهاية» */
+          /* الأيام المعدودة: (البداية، النهاية]، وتشمل يوم البداية عند تفعيل «شمل يوم النهاية» */
           setBusy($("#diff-run"),true,"جارٍ جلب الإجازات…");
           try{
-            const map=await loadHolidayMap(s.getUTCFullYear(),e.getUTCFullYear());
-            if(token!==diffToken)return;
-            for(let t=s.getTime()+(inclusive?0:864e5);t<=e.getTime();t+=864e5){const iso=isoOfDate(new Date(t));if(map.has(iso))holidays.push({iso,name:map.get(iso)})}
+            if(baseDays>HOLIDAY_MAX_YEARS*366)throw tooLongError();
+            const ym=new Map(), run={stale:false};
+            for(let t=s.getTime()+(inclusive?0:864e5);t<=e.getTime();t+=864e5){
+              const dt=new Date(t), y=dt.getUTCFullYear();let map=ym.get(y);
+              if(!map){map=await runYearMap(ym,run,y);if(token!==diffToken)return}
+              const iso=isoOfDate(dt);
+              if(map.has(iso))holidays.push({iso,name:map.get(iso)});
+              else if(isWeekendDay(dt))weekendDays++;
+            }
+            stale=run.stale;
           }catch(err){if(token===diffToken)showDiffError(holidayMessage(err));return}
           finally{if(token===diffToken)setBusy($("#diff-run"),false)}
         }
-        const days=baseDays-holidays.length, effNet=new Date(s.getTime()+days*864e5);
+        const days=baseDays-holidays.length-weekendDays, effNet=new Date(s.getTime()+days*864e5);
         const g=diffBreakdown("gregorian",s,effNet), h=diffBreakdown("hijri",s,effNet);
         if(!g||!h){showDiffError("تعذر إكمال الحساب ضمن نطاق التقويم المدعوم.");return}
-        diffOut={s,e,days,baseDays,g,h,swapped,inclusive,excl,holidays};
+        diffOut={s,e,days,baseDays,g,h,swapped,inclusive,excl,holidays,weekendDays,stale};
         renderDiffResult();diffResults.hidden=false;
+        if(save)saveDiffHistory({startType:diffBlocks.start.state.type,start:startEntered,endType:diffBlocks.end.state.type,end:endEntered,inclusive,excl,title:diffTitle.value.trim().slice(0,48),days});
       }
       const UNIT_FORMS={
         days:{one:"يوم واحد",two:"يومان",few:"أيام",many:"يوماً",zero:"يوم"},
@@ -739,36 +809,89 @@
       }
       function renderDiffResult(){
         if(!diffOut)return;
-        const {s,e,days,baseDays,g,h,swapped,inclusive,excl,holidays}=diffOut;
+        const {s,e,days,baseDays,g,h,swapped,inclusive,excl,holidays,weekendDays,stale}=diffOut;
         const both=dt=>`<bdi>${formatDate(gParts(dt),"gregorian",{suffix:"short"})}</bdi> الموافق <bdi>${formatDate(hParts(dt),"hijri",{suffix:"short"})}</bdi>`;
         $("#diff-range").innerHTML=`<p><b>من</b>${both(s)}</p><p><b>إلى</b>${both(e)}</p>`;
         $("#diff-note").textContent=swapped?"تاريخ النهاية أسبق من تاريخ البداية، لذلك رُتّب التاريخان زمنياً وحُسب الفرق بينهما.":"";
         $("#diff-days").textContent=countText(days,"days");
         const modeText=inclusive?"شامل يومي البداية والنهاية":"الفرق بين التاريخين";
-        $("#diff-days-sub").textContent=excl?`${modeText} — قبل الاستبعاد: ${toDigits(String(baseDays))}، الإجازات المستبعدة: ${toDigits(String(holidays.length))}`:modeText;
-        const weeks=Math.floor(days/7), rest=days%7, wl=[];
-        if(weeks)wl.push(countText(weeks,"weeks"));
-        if(rest)wl.push(countText(rest,"days"));
-        $("#diff-weeks").textContent=wl.length?joinCounts(wl):countText(0,"days");
+        $("#diff-days-sub").textContent=excl?`${modeText} — قبل الاستبعاد: ${toDigits(String(baseDays))}، الأيام المستبعدة: ${toDigits(String(holidays.length+weekendDays))}`:modeText;
+        $("#diff-weeks").textContent=weeksText(days);
         $("#diff-weeks-sub").textContent="إجمالي الأيام: "+toDigits(String(days));
-        const tail=excl?" — بعد استبعاد الإجازات":"";
+        const tail=excl?" — بعد الاستبعاد":"";
         $("#diff-g").textContent=breakdownText(g);
         $("#diff-h").textContent=breakdownText(h);
         $("#diff-g-sub").textContent=(g.totalMonths?"إجمالي الأشهر الكاملة: "+countText(g.totalMonths,"months"):"لا توجد أشهر كاملة بين التاريخين")+tail;
         $("#diff-h-sub").textContent=(h.totalMonths?"إجمالي الأشهر الكاملة: "+countText(h.totalMonths,"months"):"لا توجد أشهر كاملة بين التاريخين")+tail;
         const box=$("#diff-holidays");
-        if(excl){box.innerHTML=holidayBoxHtml(holidays);box.hidden=false}else{box.innerHTML="";box.hidden=true}
+        if(excl){box.innerHTML=holidayBoxHtml(holidays,weekendDays,stale);box.hidden=false}else{box.innerHTML="";box.hidden=true}
       }
-      $("#diff-run").addEventListener("click",runDiff);
-      diffInclusive.addEventListener("change",()=>{if(diffOut)runDiff()});
+      function weeksText(days){const w=Math.floor(days/7),r=days%7,l=[];if(w)l.push(countText(w,"weeks"));if(r)l.push(countText(r,"days"));return l.length?joinCounts(l):countText(0,"days")}
+      /* سجل عمليات الفرق بين تاريخين */
+      const DIFF_STORE="ink-calendar-single-file-diff-history-v1";
+      const diffHistoryBox=$("#diff-history"), diffClearButton=$("#diff-clear"), diffArchive=$("#diff-archive"), diffTitle=$("#diff-title");
+      const validSide=(t,d)=>(t==="gregorian"||t==="hijri")&&isDate(d);
+      function loadDiffHistory(){try{const x=JSON.parse(localStorage.getItem(DIFF_STORE)||"[]");return Array.isArray(x)?x.filter(i=>i&&validSide(i.startType,i.start)&&validSide(i.endType,i.end)&&Number.isFinite(i.days)):[]}catch{return[]}}
+      let diffHistory=loadDiffHistory();
+      function persistDiffHistory(){try{localStorage.setItem(DIFF_STORE,JSON.stringify(diffHistory))}catch{}}
+      function saveDiffHistory(entry){
+        const top=diffHistory[0];
+        if(top&&top.startType===entry.startType&&top.endType===entry.endType&&same(top.start,entry.start)&&same(top.end,entry.end)&&Boolean(top.inclusive)===Boolean(entry.inclusive)&&Boolean(top.excl)===Boolean(entry.excl)&&(top.title||"")===(entry.title||""))return;
+        diffHistory.unshift({id:Date.now()+"-"+Math.random().toString(36).slice(2,7),startType:entry.startType,start:entry.start,endType:entry.endType,end:entry.end,inclusive:Boolean(entry.inclusive),excl:Boolean(entry.excl),title:entry.title||"",days:entry.days,time:Date.now()});
+        diffHistory=diffHistory.slice(0,12);persistDiffHistory();renderDiffHistory();
+      }
+      function restoreDiff(item){
+        const vals=d=>({day:String(d.day),month:String(d.month),year:String(d.year)});
+        diffBlocks.start.set(item.startType,vals(item.start));diffBlocks.end.set(item.endType,vals(item.end));
+        diffInclusive.checked=Boolean(item.inclusive);diffExcl.checked=Boolean(item.excl);
+        diffTitle.value=typeof item.title==="string"?item.title:"";
+        runDiff(false);
+        window.scrollTo({top:document.querySelector("#converter").offsetTop-18,behavior:"smooth"});
+      }
+      function openDiffTitleEditor(item,row){
+        if(row.querySelector(".history-title-editor"))return;
+        const editor=document.createElement("div");editor.className="history-title-editor";
+        editor.innerHTML='<input type="text" maxlength="48" placeholder="عنوان العملية"><button type="button">حفظ</button><button type="button">إلغاء</button>';
+        const input=editor.querySelector("input");input.value=typeof item.title==="string"?item.title:"";
+        const commit=()=>{item.title=input.value.trim().slice(0,48);persistDiffHistory();renderDiffHistory()};
+        const buttons=editor.querySelectorAll("button");
+        buttons[0].addEventListener("click",commit);buttons[1].addEventListener("click",renderDiffHistory);
+        input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();commit()}if(e.key==="Escape"){e.preventDefault();renderDiffHistory()}});
+        row.appendChild(editor);input.focus();input.select();
+      }
+      function renderDiffHistory(){
+        diffClearButton.classList.toggle("show",diffHistory.length>0);
+        if(!diffHistory.length){diffHistoryBox.innerHTML='<div class="empty"><div class="empty-art" aria-hidden="true"></div><b>لا توجد عمليات محفوظة بعد.</b><span>سيظهر هنا آخر ما تحسبه.</span></div>';return}
+        diffHistoryBox.innerHTML="";
+        diffHistory.forEach(item=>{
+          const over=item.startType!==item.endType?{suffix:"short"}:undefined;
+          const flags=[item.inclusive?"شامل يوم النهاية":"",item.excl?"دون الإجازات والعطلة":""].filter(Boolean).join(" · ");
+          const days=countText(item.days,"days"), title=typeof item.title==="string"?item.title.trim():"";
+          const head=title?`<span class="history-title">${escapeHtml(title)}</span><span class="history-words">${days}</span>`:`<span class="history-title">${days}</span>`;
+          const row=document.createElement("div");row.className="history-item";
+          row.innerHTML=`<button type="button" class="history-open"><span class="history-kind">↔</span><span class="history-dates"><b>${formatDate(item.start,item.startType,over)}</b><i>→</i><strong>${formatDate(item.end,item.endType,over)}</strong></span>${head}<span class="history-words">${weeksText(item.days)}${flags?" · "+flags:""}</span><small>${new Intl.DateTimeFormat("ar",{hour:"numeric",minute:"2-digit"}).format(item.time)}</small></button><button type="button" class="history-edit" aria-label="تعديل عنوان هذه العملية" title="تعديل العنوان">✎</button><button type="button" class="history-delete" aria-label="حذف هذه العملية" title="حذف العملية">×</button>`;
+          row.querySelector(".history-open").addEventListener("click",()=>restoreDiff(item));
+          row.querySelector(".history-edit").addEventListener("click",()=>openDiffTitleEditor(item,row));
+          row.querySelector(".history-delete").addEventListener("click",()=>{diffHistory=diffHistory.filter(r=>r.id!==item.id);persistDiffHistory();renderDiffHistory()});
+          diffHistoryBox.appendChild(row);
+        });
+      }
+      diffClearButton.addEventListener("click",()=>{diffHistory=[];persistDiffHistory();renderDiffHistory()});
+      diffTitle.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();runDiff()}});
+      renderDiffHistory();
+      $("#diff-run").addEventListener("click",()=>runDiff());
+      diffInclusive.addEventListener("change",()=>resetDiffResult());
       diffToggle.addEventListener("click",()=>setMode("diff"));
+      const convertToggle=$("#convert-toggle"), directionSeg=$("#direction-seg");
+      convertToggle.addEventListener("click",()=>setMode("convert"));
       function setMode(next){
         const conv=next==="convert", calc=next==="calc", diff=next==="diff";
-        calcSection.hidden=!calc;diffSection.hidden=!diff;inputSection.hidden=!conv;resultSection.hidden=!conv;
-        calcArchive.hidden=!calc;mainArchive.hidden=!conv;workspace.classList.toggle("no-archive",diff);
+        calcSection.hidden=!calc;diffSection.hidden=!diff;inputSection.hidden=!conv;resultSection.hidden=!conv;directionSeg.hidden=!conv;
+        calcArchive.hidden=!calc;diffArchive.hidden=!diff;mainArchive.hidden=!conv;
+        convertToggle.classList.toggle("active",conv);convertToggle.setAttribute("aria-pressed",String(conv));
         calcToggle.classList.toggle("active",calc);calcToggle.setAttribute("aria-pressed",String(calc));
         diffToggle.classList.toggle("active",diff);diffToggle.setAttribute("aria-pressed",String(diff));
-        document.querySelectorAll(".direction").forEach(b=>b.classList.toggle("active",conv&&b.dataset.direction===direction));
+        document.querySelectorAll(".direction").forEach(b=>b.classList.toggle("active",b.dataset.direction===direction));
         (calc?calcFieldsBox:diff?diffBlocks.start.box:fieldsBox).querySelector("input")?.focus();
       }
       function setCalc(on){setMode(on?"calc":"convert")}
