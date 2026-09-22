@@ -228,7 +228,7 @@
             <label class="entry-title"><span>عنوان العملية <small>اختياري</small></span><input id="calc-title" type="text" maxlength="48" autocomplete="off" placeholder="مثال: نهاية مدة العقد" /></label>
             <label class="diff-check"><input type="checkbox" id="calc-excl"><span>استبعاد الإجازات الرسمية السعودية وعطلة الجمعة والسبت <small>عبر Calendarific</small></span></label>
             <p class="tip">تُضاف السنوات والشهور أولاً بتقويم تاريخ البداية، ثم الأسابيع والأيام. أدخل رقماً سالباً (مثل -7) للطرح.</p>
-            <div class="actions calc-actions"><button class="primary" id="calc-run" type="button"><span>＋</span> احسب التاريخ</button><button class="reset-all clear-all" type="button" title="تفريغ جميع الخانات في الصفحة">⌫ </button></div>
+            <div class="actions calc-actions"><button class="primary" id="calc-run" type="button"><span>＋</span> احسب التاريخ</button><button class="reset-all clear-all" type="button" title="تفريغ جميع الخانات في الصفحة">⌫</button></div>
             <p class="error" id="calc-error" role="alert"></p>
             <div class="calc-results" id="calc-results" hidden aria-live="polite">
               <div class="calc-card"><span class="calc-card-title">التاريخ الميلادي</span><strong class="result-date" id="calc-g-date"></strong><span class="result-words" id="calc-g-words"></span><button class="copy" id="calc-g-copy" type="button">⧉ نسخ الميلادي</button><span class="copy-status" id="calc-g-status" aria-live="polite"></span></div>
@@ -333,7 +333,7 @@
       function renderInputs(){
         const meta={day:"اليوم",month:"الشهر",year:"السنة"}; fieldsBox.innerHTML="";
         inputOrder().forEach((key,index)=>{const label=document.createElement("label");label.className="field"+(key==="year"?" year":"");label.innerHTML=`<span class="field-label"><i>${String(index+1).padStart(2,"0")}</i>${meta[key]}</span><input aria-label="${meta[key]}" data-key="${key}" inputmode="numeric" autocomplete="off" maxlength="${key==="year"?4:2}" value="${escapeAttr(fields[key]||"")}">`;fieldsBox.appendChild(label)});
-        fieldsBox.querySelectorAll("input").forEach((input,idx,all)=>{input.addEventListener("input",e=>{const value=e.target.value.replace(/\D/g,"").slice(0,e.target.maxLength);e.target.value=value;fields[e.target.dataset.key]=value;clearResult();if(value.length===Number(e.target.maxLength)&&all[idx+1])all[idx+1].focus();if(value===""&&e.inputType==="deleteContentBackward"&&all[idx-1]){all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}if(fieldsComplete())convert()});input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();copyCurrentResult()}if(e.key==="Backspace"&&input.value===""&&all[idx-1]){e.preventDefault();all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}})});
+        fieldsBox.querySelectorAll("input").forEach((input,idx,all)=>{input.addEventListener("input",e=>{const value=e.target.value.replace(/\D/g,"").slice(0,e.target.maxLength);e.target.value=value;fields[e.target.dataset.key]=value;clearResult();if(value.length===Number(e.target.maxLength)&&all[idx+1])all[idx+1].focus();if(value===""&&e.inputType==="deleteContentBackward"&&all[idx-1]){all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}if(fieldsComplete())convert()});input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();copyCurrentResult()}if(e.key==="Backspace"&&input.value===""&&all[idx-1]){e.preventDefault();all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}});attachDatePaste(input,()=>[...fieldsBox.querySelectorAll("input")])});
       }
       function escapeAttr(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
       function escapeHtml(v){return escapeAttr(v)}
@@ -593,6 +593,42 @@
       const calcAdd={days:$("#calc-days"),weeks:$("#calc-weeks"),months:$("#calc-months"),years:$("#calc-years")};
             let calcType="gregorian", calcDate={day:"",month:"",year:""}, calcOut=null;
       function normalizeDigits(v){return String(v).replace(/[\u0660-\u0669]/g,d=>d.charCodeAt(0)-1632).replace(/[\u06F0-\u06F9]/g,d=>d.charCodeAt(0)-1776).replace(/[\u2212\u2013\u2012]/g,"-")}
+      function fillDateInputs(inputs,text){
+        if(!text)return false;
+        const matches=normalizeDigits(text).match(/\d+/g);
+        if(!matches||matches.length!==3)return false;
+        const keys=inputs.map(i=>i.dataset.key);
+        const yearIdx=matches.findIndex(m=>m.length>=3);
+        const assign={};
+        if(yearIdx!==-1){
+          assign.year=matches[yearIdx];
+          const rest=matches.filter((_,i)=>i!==yearIdx), restKeys=keys.filter(k=>k!=="year");
+          restKeys.forEach((k,i)=>{assign[k]=rest[i]});
+        }else keys.forEach((k,i)=>{assign[k]=matches[i]});
+        /* تصحيح تلقائي: قيمة أكبر من 12 لا يمكن أن تكون شهراً */
+        if(Number(assign.month)>12&&Number(assign.day)&&Number(assign.day)<=12){const t=assign.month;assign.month=assign.day;assign.day=t}
+        let applied=false;
+        inputs.forEach(input=>{
+          const key=input.dataset.key, max=Number(input.maxLength), raw=(assign[key]||"").replace(/\D/g,"").slice(0,max);
+          if(!raw)return;
+          input.value=raw;applied=true;
+          input.dispatchEvent(new Event("input",{bubbles:true}));
+        });
+        return applied;
+      }
+      /* لصق تاريخ كامل (مثل نص منسوخ من نتيجة أعلى الصفحة) في أي خانة يعبّئ الخانات الثلاث دفعة واحدة */
+      function attachDatePaste(input,getInputs){
+        input.addEventListener("paste",e=>{
+          const cd=e.clipboardData||window.clipboardData;if(!cd)return;
+          const text=cd.getData("text");
+          if(fillDateInputs(getInputs(),text)){
+            e.preventDefault();
+            const list=getInputs(),last=list[list.length-1];
+            last.focus();if(last.setSelectionRange)last.setSelectionRange(last.value.length,last.value.length);
+          }
+        });
+      }
+      
       function cleanNumber(v,allowNeg,limit){v=normalizeDigits(v).trim();const neg=allowNeg&&v.startsWith("-");let digits=v.replace(/\D/g,"").slice(0,limit);if(allowNeg)digits=digits.replace(/^0+(?=\d)/,"");return (neg?"-":"")+digits}
       function utcDate(y,m,d){const dt=new Date(0);dt.setUTCFullYear(y,m-1,d);return dt}
       function gregorianMonthLength(y,m){const dt=new Date(0);dt.setUTCFullYear(y,m,0);return dt.getUTCDate()}
@@ -606,6 +642,7 @@
         inputs.forEach((input,idx)=>{
           input.addEventListener("input",()=>{const max=Number(input.maxLength);const v=cleanNumber(input.value,false,max);input.value=v;calcDate[input.dataset.key]=v;resetCalcResult();if(v.length===max)(inputs[idx+1]||calcAdd.days).focus()});
           input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();runCalc()}if(e.key==="Backspace"&&input.value===""&&inputs[idx-1]){e.preventDefault();inputs[idx-1].focus()}});
+          attachDatePaste(input,()=>[...calcFieldsBox.querySelectorAll("input")]);
         });
       }
       Object.values(calcAdd).forEach(input=>{
@@ -757,6 +794,7 @@
           inputs.forEach((input,idx)=>{
             input.addEventListener("input",()=>{const max=Number(input.maxLength);const v=cleanNumber(input.value,false,max);input.value=v;state.values[input.dataset.key]=v;resetDiffResult();if(v.length===max){const target=inputs[idx+1]||(next&&next());if(target)target.focus()}});
             input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();runDiff()}if(e.key==="Backspace"&&input.value===""&&inputs[idx-1]){e.preventDefault();inputs[idx-1].focus()}});
+            attachDatePaste(input,()=>[...box.querySelectorAll("input")]);
           });
         }
         root.querySelectorAll(".diff-type").forEach(b=>b.addEventListener("click",()=>{
