@@ -101,6 +101,17 @@
     .reset-all:hover{border-color:var(--clay);color:var(--clay)}
     .reset-all:active{transform:scale(.97)}
     .reset-all:focus-visible{outline:3px solid rgba(197,93,60,.42);outline-offset:3px}
+    html{background:var(--paper);transition:filter .15s var(--ease)}
+    @media (prefers-color-scheme:dark){html:not([data-theme]){filter:invert(1) hue-rotate(180deg)}}
+    html[data-theme="dark"]{filter:invert(1) hue-rotate(180deg)}
+    html[data-theme="light"],html[data-theme="warm"]{filter:none}
+    :root[data-theme="warm"]{--paper:#efe3cc;--sheet:#fbf3e2;--ink:#3c2f21;--clay:#b1502e;--sand:#e6d6b5;--line:#dac6a1;--muted:#7d6b52;--shadow:rgba(60,47,33,.12)}
+    .theme-row{flex-wrap:wrap}
+    .theme-opt{border:0;background:rgba(255,253,248,.76);color:#526572;padding:10px 20px;font:700 13px Tahoma;cursor:pointer;transition:.16s var(--ease)}
+    .theme-opt+.theme-opt{border-right:1px solid var(--line)}
+    .theme-opt.active{background:var(--ink);color:#fff}
+    .theme-opt:active{transform:scale(.97)}
+    .theme-opt:focus-visible{outline:3px solid rgba(197,93,60,.42);outline-offset:3px}
     .direction-seg{margin-top:18px}
     .direction-seg[hidden]{display:none}
     .direction-seg .direction{margin:0;padding:10px 20px;border:0;background:rgba(255,253,248,.76);color:#526572;font:700 13px Tahoma}
@@ -136,8 +147,20 @@
           <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M12 12h19v23H12z" fill="#17324d"/><path d="M18 8h19v23H18z" fill="#c55d3c"/><path d="M15 18h17M15 23h17M15 28h10" stroke="#fffdf8" stroke-width="2"/><path d="M20 36h15l-4-4m4 4-4 4" stroke="#fffdf8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <span class="brand-word">محول <small>التاريخ</small></span>
         </a>
-        <div class="top-actions"><div class="mini-line">هجري<i></i>ميلادي</div><button class="fmt-toggle" id="fmt-toggle" type="button" aria-expanded="false" aria-controls="fmt-panel">⚙ تنسيق التواريخ</button></div>
+        <div class="top-actions"><div class="mini-line">هجري<i></i>ميلادي</div><button class="fmt-toggle" id="theme-toggle" type="button" aria-expanded="false" aria-controls="theme-panel">🎨 المظهر</button>
+            <button class="fmt-toggle" id="fmt-toggle" type="button" aria-expanded="false" aria-controls="fmt-panel">⚙ تنسيق التواريخ</button></div>
       </header>
+
+      <section class="fmt-panel theme-panel" id="theme-panel" aria-label="مظهر الصفحة" hidden>
+        <div class="fmt-head"><h2>مظهر الصفحة</h2><div class="fmt-head-actions"><button class="fmt-close" id="theme-close" type="button" aria-label="إغلاق">×</button></div></div>
+        <p class="fmt-note">يُحفظ اختيارك على هذا الجهاز. «تلقائي» يتبع إعداد المظهر في نظامك أو متصفحك.</p>
+        <div class="calc-type-row theme-row" role="group" aria-label="اختيار المظهر">
+          <button class="theme-opt active" data-theme="auto" type="button">تلقائي</button>
+          <button class="theme-opt" data-theme="light" type="button">فاتح</button>
+          <button class="theme-opt" data-theme="dark" type="button">ليلي</button>
+          <button class="theme-opt" data-theme="warm" type="button">دافئ</button>
+        </div>
+      </section>
 
       <section class="fmt-panel" id="fmt-panel" aria-label="تنسيق عرض التواريخ" hidden>
         <div class="fmt-head"><h2>تنسيق عرض التواريخ</h2><div class="fmt-head-actions"><button class="fmt-reset" id="fmt-reset" type="button">↺ إعادة الضبط</button><button class="fmt-close" id="fmt-close" type="button" aria-label="إغلاق">×</button></div></div>
@@ -205,7 +228,7 @@
             <label class="entry-title"><span>عنوان العملية <small>اختياري</small></span><input id="calc-title" type="text" maxlength="48" autocomplete="off" placeholder="مثال: نهاية مدة العقد" /></label>
             <label class="diff-check"><input type="checkbox" id="calc-excl"><span>استبعاد الإجازات الرسمية السعودية وعطلة الجمعة والسبت <small>عبر Calendarific</small></span></label>
             <p class="tip">تُضاف السنوات والشهور أولاً بتقويم تاريخ البداية، ثم الأسابيع والأيام. أدخل رقماً سالباً (مثل -7) للطرح.</p>
-            <div class="actions calc-actions"><button class="primary" id="calc-run" type="button"><span>＋</span> احسب التاريخ</button><button class="reset-all clear-all" type="button" title="تفريغ جميع الخانات في الصفحة">⌫</button></div>
+            <div class="actions calc-actions"><button class="primary" id="calc-run" type="button"><span>＋</span> احسب التاريخ</button><button class="reset-all clear-all" type="button" title="تفريغ جميع الخانات في الصفحة">⌫ </button></div>
             <p class="error" id="calc-error" role="alert"></p>
             <div class="calc-results" id="calc-results" hidden aria-live="polite">
               <div class="calc-card"><span class="calc-card-title">التاريخ الميلادي</span><strong class="result-date" id="calc-g-date"></strong><span class="result-words" id="calc-g-words"></span><button class="copy" id="calc-g-copy" type="button">⧉ نسخ الميلادي</button><span class="copy-status" id="calc-g-status" aria-live="polite"></span></div>
@@ -436,12 +459,29 @@
         if(cal==="all")FMT.digits=sel.value;else FMT[cal][opt]=sel.value;
         applyFormat();
       });
-      function setFmtPanel(open){fmtPanel.hidden=!open;fmtToggle.setAttribute("aria-expanded",String(open))}
+      function setFmtPanel(open){fmtPanel.hidden=!open;fmtToggle.setAttribute("aria-expanded",String(open));if(open)setThemePanel(false)}
       fmtToggle.addEventListener("click",()=>setFmtPanel(fmtPanel.hidden));
       $("#fmt-close").addEventListener("click",()=>{setFmtPanel(false);fmtToggle.focus()});
       $("#fmt-reset").addEventListener("click",()=>{FMT=JSON.parse(JSON.stringify(DEFAULT_FMT));buildFmtPanel();applyFormat()});
-      document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!fmtPanel.hidden){setFmtPanel(false);fmtToggle.focus()}});
+      document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!fmtPanel.hidden){setFmtPanel(false);fmtToggle.focus()}if(!themePanel.hidden){setThemePanel(false);themeToggle.focus()}});
       buildFmtPanel();
+      /* ===== مظهر الصفحة (تلقائي / فاتح / ليلي / دافئ) ===== */
+      const THEME_STORE="ink-calendar-single-file-theme-v1", THEME_VALUES=["auto","light","dark","warm"];
+      const themePanel=$("#theme-panel"), themeToggle=$("#theme-toggle");
+      function loadTheme(){try{const v=localStorage.getItem(THEME_STORE);return THEME_VALUES.includes(v)?v:"auto"}catch{return "auto"}}
+      let theme=loadTheme();
+      function applyTheme(){
+        if(theme==="auto")document.documentElement.removeAttribute("data-theme");
+        else document.documentElement.setAttribute("data-theme",theme);
+        document.querySelectorAll(".theme-opt").forEach(b=>b.classList.toggle("active",b.dataset.theme===theme));
+      }
+      document.querySelectorAll(".theme-opt").forEach(b=>b.addEventListener("click",()=>{
+        theme=b.dataset.theme;try{localStorage.setItem(THEME_STORE,theme)}catch{}applyTheme();
+      }));
+      applyTheme();
+      function setThemePanel(open){themePanel.hidden=!open;themeToggle.setAttribute("aria-expanded",String(open));if(open)setFmtPanel(false)}
+      themeToggle.addEventListener("click",()=>setThemePanel(themePanel.hidden));
+      $("#theme-close").addEventListener("click",()=>{setThemePanel(false);themeToggle.focus()});
       /* ===== الإجازات الرسمية السعودية (Calendarific) ===== */
       const CALENDARIFIC_API_KEY="9UnxKXDeaLI6M4kyPUXtNHvKhOxZuUr4";
       const HOLIDAY_CACHE_KEY="ink-calendar-single-file-holidays-sa-v1";
