@@ -2,9 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="محول تاريخ عربي بين الهجري والميلادي مع سجل محلي محفوظ في المتصفح." />
-  <meta name="theme-color" content="#f6f1e7" />
+  <meta name="theme-color" content="#f6f1e7" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0e141b" media="(prefers-color-scheme: dark)" />
+  <meta name="format-detection" content="telephone=no" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2317324d'/%3E%3Cpath d='M16 17h32v31H16z' fill='%23f6f1e7'/%3E%3Cpath d='M16 25h32M24 13v8m16-8v8' stroke='%23c55d3c' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M24 35h17m0 0-5-5m5 5-5 5' stroke='%2317324d' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <title>المؤرخ</title>
   <style>
@@ -140,6 +142,65 @@
     @media(max-width:560px){.calc-results{grid-template-columns:1fr}.calc-durations{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:480px){.direction-row{flex-wrap:wrap}.direction,.calc-tab{margin-left:12px;font-size:12px}}
   </style>
+  <style>
+    /* ===== دعم الهواتف والشاشات الصغيرة ===== */
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    .app{min-height:100vh;min-height:100dvh}
+    .shell{--pad:44px;padding-left:max(var(--pad),env(safe-area-inset-left,0px));padding-right:max(var(--pad),env(safe-area-inset-right,0px))}
+    button,input,select,label{touch-action:manipulation}
+    input:not([type=checkbox]),select,button{border-radius:0}
+    input:not([type=checkbox]){-webkit-appearance:none;appearance:none}
+    .sign-btn{display:none;position:absolute;left:8px;bottom:8px;width:40px;height:40px;padding:0;place-items:center;border:1px solid var(--line);background:var(--sheet);color:var(--ink);font:700 18px Tahoma;cursor:pointer}
+    .sign-btn[aria-pressed="true"]{background:var(--clay);border-color:var(--clay);color:#fff}
+    @media(max-width:960px){.workspace{display:flex;flex-direction:column;gap:26px}.converter{min-width:0}.archive{position:relative;top:auto}}
+    @media(max-width:820px),(pointer:coarse){
+      .entry-title input,.history-title-editor input,.fmt-field select{font-size:16px}
+      .calc-durations .field{position:relative}.sign-btn{display:grid}
+      .calc-durations .field input{padding-left:52px;padding-right:8px}
+    }
+    @media(hover:none){.tip-kbd{display:none}.primary:hover{background:var(--clay);box-shadow:4px 4px 0 var(--ink);transform:none}.history-open:hover{padding-right:0;background:transparent}}
+    @media(max-width:820px){
+      .shell{--pad:24px}
+      .topbar{height:auto;min-height:64px;padding:10px 0;gap:10px}
+      .top-actions{gap:8px}.fmt-toggle{height:44px;padding:0 12px}
+      .hero{min-height:0;padding:20px 0 12px}.hero h1{font-size:28px}
+      .direction-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+      .calc-tab{margin:0;min-height:48px;padding:10px 4px;font-size:13px;line-height:1.5;text-align:center}
+      .calc-type-row{width:100%}
+      .calc-type,.diff-type,.theme-opt{flex:1 1 0;min-height:46px;padding:10px 8px;text-align:center}
+      .direction-seg{display:grid;grid-template-columns:1fr 1fr}
+      .direction-seg .direction{min-height:46px;padding:10px 6px;text-align:center;line-height:1.5}
+      .date-fields{gap:8px}
+      .date-fields .field,.date-fields .field.year{width:auto;flex:1 1 0;min-width:0}
+      .date-fields .field.year{flex-grow:1.4}
+      .field input{height:56px;padding:0 4px;font-size:20px}
+      .entry-title{max-width:none}
+      .actions{gap:8px;flex-wrap:nowrap}.actions .primary{flex:1 1 auto;min-width:0;padding:0 14px}
+      .result{margin-top:16px;padding:16px 16px 14px}
+      .result-date,.calc-card .result-date{font-size:clamp(22px,7vw,30px);overflow-wrap:anywhere}
+      .calc-card{padding:14px}
+      .copy{min-height:44px;padding:8px 14px;font-size:13px}
+      .diff-blocks{gap:22px}.diff-range{padding:10px 12px;font-size:13px}
+      .diff-check{align-items:flex-start;gap:12px;min-height:44px;line-height:1.7}.diff-check input{flex:none;width:24px;height:24px}
+      .holiday-box li span{min-width:0;flex-basis:100%}
+      .fmt-panel{margin-top:14px;padding:16px 14px 18px}.fmt-head{flex-wrap:wrap}
+      .fmt-reset,.fmt-close{height:44px;min-width:44px}.fmt-field select{height:46px}
+      .archive{padding:20px 16px 18px}.history{min-height:0}.empty{min-height:220px}
+      .history-open{width:calc(100% - 92px);min-height:64px}
+      .history-delete,.history-edit{width:40px;height:40px;top:12px}.history-edit{left:46px}
+      .history-title-editor{flex-wrap:wrap}.history-title-editor input{flex:1 1 100%;height:44px}.history-title-editor button{flex:1;height:44px}
+      .clear{min-height:44px;padding:8px}
+      .footer{padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));font-size:11px}
+    }
+    @media(max-width:480px){
+      .shell{--pad:16px}
+      .fmt-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+      .theme-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.theme-opt{padding:10px 2px}
+    }
+    @media(max-width:440px){.fmt-toggle .lbl{display:none}.fmt-toggle{width:44px;padding:0;justify-content:center}}
+    @media(max-width:340px){.fmt-fields{grid-template-columns:1fr}}
+    @media(max-height:480px) and (orientation:landscape){.topbar{min-height:52px;padding:6px 0}.hero{display:none}}
+  </style>
   <main class="app">
     <div class="shell">
       <header class="topbar">
@@ -147,8 +208,8 @@
           <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M12 12h19v23H12z" fill="#17324d"/><path d="M18 8h19v23H18z" fill="#c55d3c"/><path d="M15 18h17M15 23h17M15 28h10" stroke="#fffdf8" stroke-width="2"/><path d="M20 36h15l-4-4m4 4-4 4" stroke="#fffdf8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <span class="brand-word">محول <small>التاريخ</small></span>
         </a>
-        <div class="top-actions"><div class="mini-line">هجري<i></i>ميلادي</div><button class="fmt-toggle" id="theme-toggle" type="button" aria-expanded="false" aria-controls="theme-panel">🎨 المظهر</button>
-            <button class="fmt-toggle" id="fmt-toggle" type="button" aria-expanded="false" aria-controls="fmt-panel">⚙ تنسيق التواريخ</button></div>
+        <div class="top-actions"><div class="mini-line">هجري<i></i>ميلادي</div><button class="fmt-toggle" id="theme-toggle" type="button" aria-expanded="false" aria-controls="theme-panel" aria-label="مظهر الصفحة">🎨 <span class="lbl">المظهر</span></button>
+            <button class="fmt-toggle" id="fmt-toggle" type="button" aria-expanded="false" aria-controls="fmt-panel" aria-label="تنسيق التواريخ">⚙ <span class="lbl">تنسيق التواريخ</span></button></div>
       </header>
 
       <section class="fmt-panel theme-panel" id="theme-panel" aria-label="مظهر الصفحة" hidden>
@@ -199,7 +260,7 @@
             <div class="section-head"><div><p class="marker">02 / الإدخال</p><h2 id="source-title">التاريخ الهجري</h2></div><span class="format" id="source-format">يوم / شهر / سنة</span></div>
             <div class="date-fields" id="date-fields"></div>
             <label class="entry-title"><span>عنوان التحويل <small>اختياري</small></span><input id="entry-title" type="text" maxlength="48" autocomplete="off" placeholder="مثال: موعد السفر" /></label>
-            <p class="tip"><span class="key">Tab</span> استخدم زر تاب للانتقال المنظّم بين الحقول.</p>
+            <p class="tip tip-kbd"><span class="key">Tab</span> استخدم زر تاب للانتقال المنظّم بين الحقول.</p>
           </div>
 
           <div class="section">
@@ -220,10 +281,10 @@
             <div class="date-fields" id="calc-date-fields"></div>
             <p class="calc-label">المدة المراد إضافتها</p>
             <div class="calc-durations">
-              <label class="field"><span class="field-label">أيام</span><input id="calc-days" aria-label="عدد الأيام" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
-              <label class="field"><span class="field-label">أسابيع</span><input id="calc-weeks" aria-label="عدد الأسابيع" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
-              <label class="field"><span class="field-label">شهور</span><input id="calc-months" aria-label="عدد الشهور" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
-              <label class="field"><span class="field-label">سنوات</span><input id="calc-years" aria-label="عدد السنوات" inputmode="numeric" autocomplete="off" maxlength="7" value="0"></label>
+              <label class="field"><span class="field-label">أيام</span><input id="calc-days" aria-label="عدد الأيام" inputmode="numeric" autocomplete="off" maxlength="7" value="0"><button class="sign-btn" type="button" aria-pressed="false" aria-label="تبديل الإشارة: إضافة أو طرح">±</button></label>
+              <label class="field"><span class="field-label">أسابيع</span><input id="calc-weeks" aria-label="عدد الأسابيع" inputmode="numeric" autocomplete="off" maxlength="7" value="0"><button class="sign-btn" type="button" aria-pressed="false" aria-label="تبديل الإشارة: إضافة أو طرح">±</button></label>
+              <label class="field"><span class="field-label">شهور</span><input id="calc-months" aria-label="عدد الشهور" inputmode="numeric" autocomplete="off" maxlength="7" value="0"><button class="sign-btn" type="button" aria-pressed="false" aria-label="تبديل الإشارة: إضافة أو طرح">±</button></label>
+              <label class="field"><span class="field-label">سنوات</span><input id="calc-years" aria-label="عدد السنوات" inputmode="numeric" autocomplete="off" maxlength="7" value="0"><button class="sign-btn" type="button" aria-pressed="false" aria-label="تبديل الإشارة: إضافة أو طرح">±</button></label>
             </div>
             <label class="entry-title"><span>عنوان العملية <small>اختياري</small></span><input id="calc-title" type="text" maxlength="48" autocomplete="off" placeholder="مثال: نهاية مدة العقد" /></label>
             <label class="diff-check"><input type="checkbox" id="calc-excl"><span>استبعاد الإجازات الرسمية السعودية وعطلة الجمعة والسبت <small>عبر Calendarific</small></span></label>
@@ -308,6 +369,8 @@
       let lastSource = null;
       let history = loadHistory();
       const $ = (selector) => document.querySelector(selector);
+      const touchOnly = matchMedia("(hover: none) and (pointer: coarse)").matches;
+      const autoFocus = el => { if (el && !touchOnly) el.focus(); };
       const fieldsBox = $("#date-fields"), titleInput = $("#entry-title"), sourceTitle = $("#source-title"), sourceFormat = $("#source-format"), error = $("#error"), result = $("#result"), placeholder = $("#placeholder"), resultContent = $("#result-content"), saved = $("#saved"), historyBox = $("#history"), clearButton = $("#clear");
 
       function parts(formatter, date) {
@@ -333,7 +396,7 @@
       function renderInputs(){
         const meta={day:"اليوم",month:"الشهر",year:"السنة"}; fieldsBox.innerHTML="";
         inputOrder().forEach((key,index)=>{const label=document.createElement("label");label.className="field"+(key==="year"?" year":"");label.innerHTML=`<span class="field-label"><i>${String(index+1).padStart(2,"0")}</i>${meta[key]}</span><input aria-label="${meta[key]}" data-key="${key}" inputmode="numeric" autocomplete="off" maxlength="${key==="year"?4:2}" value="${escapeAttr(fields[key]||"")}">`;fieldsBox.appendChild(label)});
-        fieldsBox.querySelectorAll("input").forEach((input,idx,all)=>{input.addEventListener("input",e=>{const value=e.target.value.replace(/\D/g,"").slice(0,e.target.maxLength);e.target.value=value;fields[e.target.dataset.key]=value;clearResult();if(value.length===Number(e.target.maxLength)&&all[idx+1])all[idx+1].focus();if(value===""&&e.inputType==="deleteContentBackward"&&all[idx-1]){all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}if(fieldsComplete())convert()});input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();copyCurrentResult()}if(e.key==="Backspace"&&input.value===""&&all[idx-1]){e.preventDefault();all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}});attachDatePaste(input,()=>[...fieldsBox.querySelectorAll("input")])});
+        fieldsBox.querySelectorAll("input").forEach((input,idx,all)=>{input.addEventListener("input",e=>{const value=normalizeDigits(e.target.value).replace(/\D/g,"").slice(0,e.target.maxLength);e.target.value=value;fields[e.target.dataset.key]=value;clearResult();if(value.length===Number(e.target.maxLength)&&all[idx+1])all[idx+1].focus();if(value===""&&e.inputType==="deleteContentBackward"&&all[idx-1]){all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}if(fieldsComplete())convert()});input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();copyCurrentResult()}if(e.key==="Backspace"&&input.value===""&&all[idx-1]){e.preventDefault();all[idx-1].focus();all[idx-1].setSelectionRange(all[idx-1].value.length,all[idx-1].value.length)}});attachDatePaste(input,()=>[...fieldsBox.querySelectorAll("input")])});
       }
       function escapeAttr(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
       function escapeHtml(v){return escapeAttr(v)}
@@ -352,11 +415,11 @@
       function openTitleEditor(item,row){if(row.querySelector(".history-title-editor"))return;const editor=document.createElement("div");editor.className="history-title-editor";editor.innerHTML='<input type="text" maxlength="48" placeholder="عنوان التحويل"><button type="button">حفظ</button><button type="button">إلغاء</button>';const input=editor.querySelector("input");input.value=item.title||"";const commit=()=>{item.title=input.value.trim().slice(0,48);saveHistory();renderHistory()};editor.querySelector("button").addEventListener("click",commit);editor.querySelectorAll("button")[1].addEventListener("click",renderHistory);input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();commit()}if(event.key==="Escape"){event.preventDefault();renderHistory()}});row.appendChild(editor);input.focus();input.select()}
       function renderHistory(){
         clearButton.classList.toggle("show",history.length>0); if(!history.length){historyBox.innerHTML='<div class="empty"><div class="empty-art" aria-hidden="true"></div><b>لا توجد تحويلات محفوظة بعد.</b><span>سيظهر هنا آخر ما تحوّله.</span></div>';return}
-        historyBox.innerHTML="";history.forEach(item=>{const types=item.direction==="gregorian-to-hijri"?{source:"gregorian",result:"hijri"}:{source:"hijri",result:"gregorian"};const title=item.title?`<span class="history-title">${escapeHtml(item.title)}</span>`:"";const row=document.createElement("div");row.className="history-item";row.innerHTML=`<button type="button" class="history-open"><span class="history-kind">${item.direction==="gregorian-to-hijri"?"م ← هـ":"هـ ← م"}</span><span class="history-dates"><b>${visibleText(item.source,types.source)}</b><i>→</i><strong>${visibleText(item.result,types.result)}</strong></span>${title}<small>${new Intl.DateTimeFormat("ar",{hour:"numeric",minute:"2-digit"}).format(item.time)}</small></button><button type="button" class="history-edit" aria-label="تعديل عنوان هذه العملية" title="تعديل العنوان">✎</button><button type="button" class="history-delete" aria-label="حذف هذه العملية" title="حذف العملية">×</button>`;row.querySelector(".history-open").addEventListener("click",()=>{direction=item.direction;fields={day:String(item.source.day),month:String(item.source.month),year:String(item.source.year)};titleInput.value=item.title||"";lastResult=item.result;renderMode();showStoredResult(item.result);document.querySelector("#date-fields input")?.focus();window.scrollTo({top:document.querySelector("#converter").offsetTop-18,behavior:"smooth"})});row.querySelector(".history-edit").addEventListener("click",()=>openTitleEditor(item,row));row.querySelector(".history-delete").addEventListener("click",()=>{history=history.filter(record=>record.id!==item.id);saveHistory();renderHistory()});historyBox.appendChild(row)})
+        historyBox.innerHTML="";history.forEach(item=>{const types=item.direction==="gregorian-to-hijri"?{source:"gregorian",result:"hijri"}:{source:"hijri",result:"gregorian"};const title=item.title?`<span class="history-title">${escapeHtml(item.title)}</span>`:"";const row=document.createElement("div");row.className="history-item";row.innerHTML=`<button type="button" class="history-open"><span class="history-kind">${item.direction==="gregorian-to-hijri"?"م ← هـ":"هـ ← م"}</span><span class="history-dates"><b>${visibleText(item.source,types.source)}</b><i>→</i><strong>${visibleText(item.result,types.result)}</strong></span>${title}<small>${new Intl.DateTimeFormat("ar",{hour:"numeric",minute:"2-digit"}).format(item.time)}</small></button><button type="button" class="history-edit" aria-label="تعديل عنوان هذه العملية" title="تعديل العنوان">✎</button><button type="button" class="history-delete" aria-label="حذف هذه العملية" title="حذف العملية">×</button>`;row.querySelector(".history-open").addEventListener("click",()=>{direction=item.direction;fields={day:String(item.source.day),month:String(item.source.month),year:String(item.source.year)};titleInput.value=item.title||"";lastResult=item.result;renderMode();showStoredResult(item.result);autoFocus(document.querySelector("#date-fields input"));window.scrollTo({top:document.querySelector("#converter").offsetTop-18,behavior:"smooth"})});row.querySelector(".history-edit").addEventListener("click",()=>openTitleEditor(item,row));row.querySelector(".history-delete").addEventListener("click",()=>{history=history.filter(record=>record.id!==item.id);saveHistory();renderHistory()});historyBox.appendChild(row)})
       }
       function showStoredResult(output){const names=typeNames();error.classList.remove("show");$("#result-title").textContent=names.result==="gregorian"?"التاريخ الميلادي":"التاريخ الهجري";$("#result-date").textContent=visibleText(output,names.result);$("#result-format").textContent=patternText(names.result);placeholder.hidden=true;resultContent.hidden=false;result.classList.add("filled");saved.classList.add("show")}
-      document.querySelectorAll(".direction").forEach(button=>button.addEventListener("click",()=>{direction=button.dataset.direction;fields={day:"",month:"",year:""};clearResult();renderMode();document.querySelector("#date-fields input")?.focus()}));
-      $("#convert").addEventListener("click",()=>{if(!lastResult&&fieldsComplete())convert();copyCurrentResult()});$("#swap").addEventListener("click",()=>{const next=direction==="gregorian-to-hijri"?"hijri-to-gregorian":"gregorian-to-hijri";fields=lastResult?{day:String(lastResult.day),month:String(lastResult.month),year:String(lastResult.year)}:{day:"",month:"",year:""};direction=next;clearResult();renderMode();document.querySelector("#date-fields input")?.focus()});clearButton.addEventListener("click",()=>{history=[];saveHistory();renderHistory()});
+      document.querySelectorAll(".direction").forEach(button=>button.addEventListener("click",()=>{direction=button.dataset.direction;fields={day:"",month:"",year:""};clearResult();renderMode();autoFocus(document.querySelector("#date-fields input"))}));
+      $("#convert").addEventListener("click",()=>{if(!lastResult&&fieldsComplete())convert();copyCurrentResult()});$("#swap").addEventListener("click",()=>{const next=direction==="gregorian-to-hijri"?"hijri-to-gregorian":"gregorian-to-hijri";fields=lastResult?{day:String(lastResult.day),month:String(lastResult.month),year:String(lastResult.year)}:{day:"",month:"",year:""};direction=next;clearResult();renderMode();autoFocus(document.querySelector("#date-fields input"))});clearButton.addEventListener("click",()=>{history=[];saveHistory();renderHistory()});
       const gregorianMonths=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
       const hijriMonths=["محرم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"];
       function monthWords(date,type){return toDigits(`${monthName(date.month,type)} ${date.year}${type==="gregorian"?" م":" هـ"}`)}
@@ -800,7 +863,7 @@
         root.querySelectorAll(".diff-type").forEach(b=>b.addEventListener("click",()=>{
           state.type=b.dataset.type;state.values={day:"",month:"",year:""};
           root.querySelectorAll(".diff-type").forEach(x=>x.classList.toggle("active",x===b));
-          resetDiffResult();render();box.querySelector("input")?.focus();
+          resetDiffResult();render();autoFocus(box.querySelector("input"));
         }));
         function set(type,values){
           state.type=type;state.values={day:"",month:"",year:"",...values};
@@ -970,7 +1033,7 @@
         fields={day:"",month:"",year:""};$("#entry-title").value="";clearResult();renderInputs();
         calcDate={day:"",month:"",year:""};Object.values(calcAdd).forEach(input=>{input.value="0"});calcTitle.value="";resetCalcResult();renderCalcFields();
         [diffBlocks.start,diffBlocks.end].forEach(block=>block.set(block.state.type,{}));diffTitle.value="";resetDiffResult();
-        (!calcSection.hidden?calcFieldsBox:!diffSection.hidden?diffBlocks.start.box:fieldsBox).querySelector("input")?.focus();
+        autoFocus((!calcSection.hidden?calcFieldsBox:!diffSection.hidden?diffBlocks.start.box:fieldsBox).querySelector("input"));
       }
       document.querySelectorAll(".clear-all").forEach(button=>button.addEventListener("click",clearAllFields));
       const convertToggle=$("#convert-toggle"), directionSeg=$("#direction-seg");
@@ -983,7 +1046,7 @@
         calcToggle.classList.toggle("active",calc);calcToggle.setAttribute("aria-pressed",String(calc));
         diffToggle.classList.toggle("active",diff);diffToggle.setAttribute("aria-pressed",String(diff));
         document.querySelectorAll(".direction").forEach(b=>b.classList.toggle("active",b.dataset.direction===direction));
-        (calc?calcFieldsBox:diff?diffBlocks.start.box:fieldsBox).querySelector("input")?.focus();
+        autoFocus((calc?calcFieldsBox:diff?diffBlocks.start.box:fieldsBox).querySelector("input"));
       }
       function setCalc(on){setMode(on?"calc":"convert")}
       calcToggle.addEventListener("click",()=>setCalc(true));
@@ -992,13 +1055,43 @@
         calcType=b.dataset.type;calcDate={day:"",month:"",year:""};
         document.querySelectorAll(".calc-type").forEach(x=>x.classList.toggle("active",x===b));
         calcFormat.textContent=calcFormatText();
-        resetCalcResult();renderCalcFields();calcFieldsBox.querySelector("input")?.focus();
+        resetCalcResult();renderCalcFields();autoFocus(calcFieldsBox.querySelector("input"));
       }));
       $("#calc-run").addEventListener("click",()=>runCalc());
       $("#calc-g-copy").addEventListener("click",()=>copyCalc("gregorian",$("#calc-g-status")));
       $("#calc-h-copy").addEventListener("click",()=>copyCalc("hijri",$("#calc-h-status")));
       renderCalcFields();
-      renderMode();renderHistory();document.querySelector("#date-fields input")?.focus();
+      renderMode();renderHistory();autoFocus(document.querySelector("#date-fields input"));
+    })();
+  </script>
+  <script>
+    /* مساعدات الهاتف: زر ± للطرح، إغلاق لوحة المفاتيح، وتمرير النتيجة إلى الشاشة */
+    (() => {
+      const touch = matchMedia("(hover: none) and (pointer: coarse)"), small = matchMedia("(max-width: 820px)");
+      const syncSigns = () => document.querySelectorAll(".sign-btn").forEach(b => b.setAttribute("aria-pressed", String(b.parentElement.querySelector("input").value.startsWith("-"))));
+      document.querySelectorAll(".sign-btn").forEach(btn => btn.addEventListener("click", e => {
+        e.preventDefault();
+        const input = btn.parentElement.querySelector("input"); let v = input.value.trim();
+        v = v.startsWith("-") ? (v.slice(1) || "0") : "-" + (v === "0" ? "" : v);
+        input.value = v; input.dispatchEvent(new Event("input", {bubbles: true}));
+        if (v === "-") input.focus();
+        syncSigns();
+      }));
+      document.addEventListener("input", syncSigns);
+      document.addEventListener("click", () => setTimeout(syncSigns, 0));
+      document.addEventListener("click", e => {
+        const a = document.activeElement;
+        if (touch.matches && a && a.tagName === "INPUT" && e.target.closest("#convert,#calc-run,#diff-run")) a.blur();
+      }, true);
+      const reveal = el => { if (small.matches) setTimeout(() => el.scrollIntoView({block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}), 200); };
+      const watch = (sel, test) => {
+        const el = document.querySelector(sel); if (!el) return;
+        let was = test(el);
+        new MutationObserver(() => { const now = test(el); if (now && !was) reveal(el); was = now; }).observe(el, {attributes: true, attributeFilter: ["class", "hidden"]});
+      };
+      watch("#result", el => el.classList.contains("filled"));
+      watch("#calc-results", el => !el.hidden);
+      watch("#diff-results", el => !el.hidden);
     })();
   </script>
 </body>
